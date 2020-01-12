@@ -1,9 +1,16 @@
 
 #-----------------------------------------------------------------------------
-set(MODULE_NAME FeetSegmentation)
+set(MODULE_NAME PCLTest)
 set(MODULE_TITLE ${MODULE_NAME})
 
 string(TOUPPER ${MODULE_NAME} MODULE_NAME_UPPER)
+
+#-----------------------------------------------------------------------------
+find_package(PCL REQUIRED)
+if (NOT PCL_FOUND)
+  message("PCL Library is not found. ${MODULE_NAME} will not be built.")
+  return()
+endif()
 
 #-----------------------------------------------------------------------------
 add_subdirectory(Logic)
@@ -18,6 +25,7 @@ set(MODULE_INCLUDE_DIRECTORIES
   ${CMAKE_CURRENT_BINARY_DIR}/Logic
   ${CMAKE_CURRENT_SOURCE_DIR}/Widgets
   ${CMAKE_CURRENT_BINARY_DIR}/Widgets
+  ${PCL_INCLUDE_DIRS}
   )
 
 set(MODULE_SRCS

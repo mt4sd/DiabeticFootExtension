@@ -15,19 +15,19 @@
 
 ==============================================================================*/
 
-#ifndef __qSlicerFeetSegmentationModuleWidget_h
-#define __qSlicerFeetSegmentationModuleWidget_h
+#ifndef __qSlicerPCLTestModuleWidget_h
+#define __qSlicerPCLTestModuleWidget_h
 
 // SlicerQt includes
 #include "qSlicerAbstractModuleWidget.h"
 
-#include "qSlicerFeetSegmentationModuleExport.h"
+#include "qSlicerPCLTestModuleExport.h"
 
-class qSlicerFeetSegmentationModuleWidgetPrivate;
+class qSlicerPCLTestModuleWidgetPrivate;
 class vtkMRMLNode;
 
 /// \ingroup Slicer_QtModules_ExtensionTemplate
-class Q_SLICER_QTMODULES_FEETSEGMENTATION_EXPORT qSlicerFeetSegmentationModuleWidget :
+class Q_SLICER_QTMODULES_PCLTEST_EXPORT qSlicerPCLTestModuleWidget :
   public qSlicerAbstractModuleWidget
 {
   Q_OBJECT
@@ -35,20 +35,20 @@ class Q_SLICER_QTMODULES_FEETSEGMENTATION_EXPORT qSlicerFeetSegmentationModuleWi
 public:
 
   typedef qSlicerAbstractModuleWidget Superclass;
-  qSlicerFeetSegmentationModuleWidget(QWidget *parent=0);
-  virtual ~qSlicerFeetSegmentationModuleWidget();
+  qSlicerPCLTestModuleWidget(QWidget *parent=0);
+  virtual ~qSlicerPCLTestModuleWidget();
 
 public slots:
 
 
 protected:
-  QScopedPointer<qSlicerFeetSegmentationModuleWidgetPrivate> d_ptr;
+  QScopedPointer<qSlicerPCLTestModuleWidgetPrivate> d_ptr;
 
   virtual void setup();
 
 private:
-  Q_DECLARE_PRIVATE(qSlicerFeetSegmentationModuleWidget);
-  Q_DISABLE_COPY(qSlicerFeetSegmentationModuleWidget);
+  Q_DECLARE_PRIVATE(qSlicerPCLTestModuleWidget);
+  Q_DISABLE_COPY(qSlicerPCLTestModuleWidget);
 };
 
 #endif

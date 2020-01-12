@@ -15,14 +15,14 @@
 
 ==============================================================================*/
 
-// .NAME vtkSlicerFeetSegmentationLogic - slicer logic class for volumes manipulation
+// .NAME vtkSlicerPCLTestLogic - slicer logic class for volumes manipulation
 // .SECTION Description
 // This class manages the logic associated with reading, saving,
 // and changing propertied of the volumes
 
 
-#ifndef __vtkSlicerFeetSegmentationLogic_h
-#define __vtkSlicerFeetSegmentationLogic_h
+#ifndef __vtkSlicerPCLTestLogic_h
+#define __vtkSlicerPCLTestLogic_h
 
 // Slicer includes
 #include "vtkSlicerModuleLogic.h"
@@ -32,22 +32,22 @@
 // STD includes
 #include <cstdlib>
 
-#include "vtkSlicerFeetSegmentationModuleLogicExport.h"
+#include "vtkSlicerPCLTestModuleLogicExport.h"
 
 
 /// \ingroup Slicer_QtModules_ExtensionTemplate
-class VTK_SLICER_FEETSEGMENTATION_MODULE_LOGIC_EXPORT vtkSlicerFeetSegmentationLogic :
+class VTK_SLICER_PCLTEST_MODULE_LOGIC_EXPORT vtkSlicerPCLTestLogic :
   public vtkSlicerModuleLogic
 {
 public:
 
-  static vtkSlicerFeetSegmentationLogic *New();
-  vtkTypeMacro(vtkSlicerFeetSegmentationLogic, vtkSlicerModuleLogic);
+  static vtkSlicerPCLTestLogic *New();
+  vtkTypeMacro(vtkSlicerPCLTestLogic, vtkSlicerModuleLogic);
   void PrintSelf(ostream& os, vtkIndent indent);
 
 protected:
-  vtkSlicerFeetSegmentationLogic();
-  virtual ~vtkSlicerFeetSegmentationLogic();
+  vtkSlicerPCLTestLogic();
+  virtual ~vtkSlicerPCLTestLogic();
 
   virtual void SetMRMLSceneInternal(vtkMRMLScene* newScene);
   /// Register MRML Node classes to Scene. Gets called automatically when the MRMLScene is attached to this logic class.
@@ -57,8 +57,8 @@ protected:
   virtual void OnMRMLSceneNodeRemoved(vtkMRMLNode* node);
 private:
 
-  vtkSlicerFeetSegmentationLogic(const vtkSlicerFeetSegmentationLogic&); // Not implemented
-  void operator=(const vtkSlicerFeetSegmentationLogic&); // Not implemented
+  vtkSlicerPCLTestLogic(const vtkSlicerPCLTestLogic&); // Not implemented
+  void operator=(const vtkSlicerPCLTestLogic&); // Not implemented
 };
 
 #endif

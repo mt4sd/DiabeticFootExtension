@@ -15,19 +15,21 @@
 
 ==============================================================================*/
 
-#ifndef __qSlicerFeetSegmentationModule_h
-#define __qSlicerFeetSegmentationModule_h
+#ifndef __qSlicerPCLTestModule_h
+#define __qSlicerPCLTestModule_h
 
 // SlicerQt includes
 #include "qSlicerLoadableModule.h"
 
-#include "qSlicerFeetSegmentationModuleExport.h"
+#include <pcl/point_types.h>
 
-class qSlicerFeetSegmentationModulePrivate;
+#include "qSlicerPCLTestModuleExport.h"
+
+class qSlicerPCLTestModulePrivate;
 
 /// \ingroup Slicer_QtModules_ExtensionTemplate
-class Q_SLICER_QTMODULES_FEETSEGMENTATION_EXPORT
-qSlicerFeetSegmentationModule
+class Q_SLICER_QTMODULES_PCLTEST_EXPORT
+qSlicerPCLTestModule
   : public qSlicerLoadableModule
 {
   Q_OBJECT
@@ -39,8 +41,8 @@ qSlicerFeetSegmentationModule
 public:
 
   typedef qSlicerLoadableModule Superclass;
-  explicit qSlicerFeetSegmentationModule(QObject *parent=0);
-  virtual ~qSlicerFeetSegmentationModule();
+  explicit qSlicerPCLTestModule(QObject *parent=0);
+  virtual ~qSlicerPCLTestModule();
 
   qSlicerGetTitleMacro(QTMODULE_TITLE);
 
@@ -65,11 +67,11 @@ protected:
   virtual vtkMRMLAbstractLogic* createLogic();
 
 protected:
-  QScopedPointer<qSlicerFeetSegmentationModulePrivate> d_ptr;
+  QScopedPointer<qSlicerPCLTestModulePrivate> d_ptr;
 
 private:
-  Q_DECLARE_PRIVATE(qSlicerFeetSegmentationModule);
-  Q_DISABLE_COPY(qSlicerFeetSegmentationModule);
+  Q_DECLARE_PRIVATE(qSlicerPCLTestModule);
+  Q_DISABLE_COPY(qSlicerPCLTestModule);
 
 };
 

@@ -19,44 +19,44 @@
 #include <QDebug>
 
 // SlicerQt includes
-#include "qSlicerFeetSegmentationModuleWidget.h"
-#include "ui_qSlicerFeetSegmentationModuleWidget.h"
+#include "qSlicerPCLTestModuleWidget.h"
+#include "ui_qSlicerPCLTestModuleWidget.h"
 
 //-----------------------------------------------------------------------------
 /// \ingroup Slicer_QtModules_ExtensionTemplate
-class qSlicerFeetSegmentationModuleWidgetPrivate: public Ui_qSlicerFeetSegmentationModuleWidget
+class qSlicerPCLTestModuleWidgetPrivate: public Ui_qSlicerPCLTestModuleWidget
 {
 public:
-  qSlicerFeetSegmentationModuleWidgetPrivate();
+  qSlicerPCLTestModuleWidgetPrivate();
 };
 
 //-----------------------------------------------------------------------------
-// qSlicerFeetSegmentationModuleWidgetPrivate methods
+// qSlicerPCLTestModuleWidgetPrivate methods
 
 //-----------------------------------------------------------------------------
-qSlicerFeetSegmentationModuleWidgetPrivate::qSlicerFeetSegmentationModuleWidgetPrivate()
+qSlicerPCLTestModuleWidgetPrivate::qSlicerPCLTestModuleWidgetPrivate()
 {
 }
 
 //-----------------------------------------------------------------------------
-// qSlicerFeetSegmentationModuleWidget methods
+// qSlicerPCLTestModuleWidget methods
 
 //-----------------------------------------------------------------------------
-qSlicerFeetSegmentationModuleWidget::qSlicerFeetSegmentationModuleWidget(QWidget* _parent)
+qSlicerPCLTestModuleWidget::qSlicerPCLTestModuleWidget(QWidget* _parent)
   : Superclass( _parent )
-  , d_ptr( new qSlicerFeetSegmentationModuleWidgetPrivate )
+  , d_ptr( new qSlicerPCLTestModuleWidgetPrivate )
 {
 }
 
 //-----------------------------------------------------------------------------
-qSlicerFeetSegmentationModuleWidget::~qSlicerFeetSegmentationModuleWidget()
+qSlicerPCLTestModuleWidget::~qSlicerPCLTestModuleWidget()
 {
 }
 
 //-----------------------------------------------------------------------------
-void qSlicerFeetSegmentationModuleWidget::setup()
+void qSlicerPCLTestModuleWidget::setup()
 {
-  Q_D(qSlicerFeetSegmentationModuleWidget);
+  Q_D(qSlicerPCLTestModuleWidget);
   d->setupUi(this);
   this->Superclass::setup();
 }

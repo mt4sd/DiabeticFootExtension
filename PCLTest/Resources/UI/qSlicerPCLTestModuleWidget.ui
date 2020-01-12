@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>qSlicerFeetSegmentationModuleWidget</class>
- <widget class="qSlicerWidget" name="qSlicerFeetSegmentationModuleWidget">
+ <class>qSlicerPCLTestModuleWidget</class>
+ <widget class="qSlicerWidget" name="qSlicerPCLTestModuleWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -21,7 +21,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
-       <widget class="qSlicerFeetSegmentationFooBarWidget" name="FooBar" native="true"/>
+       <widget class="qSlicerPCLTestFooBarWidget" name="FooBar" native="true"/>
       </item>
      </layout>
     </widget>
@@ -55,9 +55,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>qSlicerFeetSegmentationFooBarWidget</class>
+   <class>qSlicerPCLTestFooBarWidget</class>
    <extends>QWidget</extends>
-   <header>qSlicerFeetSegmentationFooBarWidget.h</header>
+   <header>qSlicerPCLTestFooBarWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

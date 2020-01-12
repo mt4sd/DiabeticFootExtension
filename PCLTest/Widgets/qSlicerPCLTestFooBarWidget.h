@@ -18,35 +18,35 @@
 
 ==============================================================================*/
 
-#ifndef __qSlicerFeetSegmentationFooBarWidget_h
-#define __qSlicerFeetSegmentationFooBarWidget_h
+#ifndef __qSlicerPCLTestFooBarWidget_h
+#define __qSlicerPCLTestFooBarWidget_h
 
 // Qt includes
 #include <QWidget>
 
 // FooBar Widgets includes
-#include "qSlicerFeetSegmentationModuleWidgetsExport.h"
+#include "qSlicerPCLTestModuleWidgetsExport.h"
 
-class qSlicerFeetSegmentationFooBarWidgetPrivate;
+class qSlicerPCLTestFooBarWidgetPrivate;
 
-/// \ingroup Slicer_QtModules_FeetSegmentation
-class Q_SLICER_MODULE_FEETSEGMENTATION_WIDGETS_EXPORT qSlicerFeetSegmentationFooBarWidget
+/// \ingroup Slicer_QtModules_PCLTest
+class Q_SLICER_MODULE_PCLTEST_WIDGETS_EXPORT qSlicerPCLTestFooBarWidget
   : public QWidget
 {
   Q_OBJECT
 public:
   typedef QWidget Superclass;
-  qSlicerFeetSegmentationFooBarWidget(QWidget *parent=0);
-  virtual ~qSlicerFeetSegmentationFooBarWidget();
+  qSlicerPCLTestFooBarWidget(QWidget *parent=0);
+  virtual ~qSlicerPCLTestFooBarWidget();
 
 protected slots:
 
 protected:
-  QScopedPointer<qSlicerFeetSegmentationFooBarWidgetPrivate> d_ptr;
+  QScopedPointer<qSlicerPCLTestFooBarWidgetPrivate> d_ptr;
 
 private:
-  Q_DECLARE_PRIVATE(qSlicerFeetSegmentationFooBarWidget);
-  Q_DISABLE_COPY(qSlicerFeetSegmentationFooBarWidget);
+  Q_DECLARE_PRIVATE(qSlicerPCLTestFooBarWidget);
+  Q_DISABLE_COPY(qSlicerPCLTestFooBarWidget);
 };
 
 #endif

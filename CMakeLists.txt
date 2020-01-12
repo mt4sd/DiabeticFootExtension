@@ -19,6 +19,9 @@ set(SUPERBUILD_TOPLEVEL_PROJECT inner)
 # Extension dependencies
 find_package(Slicer REQUIRED)
 include(${Slicer_USE_FILE})
+#include(${Slicer_INCLUDE_DIR})
+
+
 mark_as_superbuild(Slicer_DIR)
 
 find_package(Git REQUIRED)
@@ -35,7 +38,7 @@ endif()
 
 #-----------------------------------------------------------------------------
 # Extension modules
-add_subdirectory(FeetSegmentation)
+add_subdirectory(PCLTest)
 ## NEXT_MODULE
 
 #-----------------------------------------------------------------------------

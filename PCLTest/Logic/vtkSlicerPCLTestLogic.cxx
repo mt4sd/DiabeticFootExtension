@@ -15,8 +15,8 @@
 
 ==============================================================================*/
 
-// FeetSegmentation Logic includes
-#include "vtkSlicerFeetSegmentationLogic.h"
+// PCLTest Logic includes
+#include "vtkSlicerPCLTestLogic.h"
 
 // MRML includes
 #include <vtkMRMLScene.h>
@@ -30,26 +30,26 @@
 #include <cassert>
 
 //----------------------------------------------------------------------------
-vtkStandardNewMacro(vtkSlicerFeetSegmentationLogic);
+vtkStandardNewMacro(vtkSlicerPCLTestLogic);
 
 //----------------------------------------------------------------------------
-vtkSlicerFeetSegmentationLogic::vtkSlicerFeetSegmentationLogic()
+vtkSlicerPCLTestLogic::vtkSlicerPCLTestLogic()
 {
 }
 
 //----------------------------------------------------------------------------
-vtkSlicerFeetSegmentationLogic::~vtkSlicerFeetSegmentationLogic()
+vtkSlicerPCLTestLogic::~vtkSlicerPCLTestLogic()
 {
 }
 
 //----------------------------------------------------------------------------
-void vtkSlicerFeetSegmentationLogic::PrintSelf(ostream& os, vtkIndent indent)
+void vtkSlicerPCLTestLogic::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
 }
 
 //---------------------------------------------------------------------------
-void vtkSlicerFeetSegmentationLogic::SetMRMLSceneInternal(vtkMRMLScene * newScene)
+void vtkSlicerPCLTestLogic::SetMRMLSceneInternal(vtkMRMLScene * newScene)
 {
   vtkNew<vtkIntArray> events;
   events->InsertNextValue(vtkMRMLScene::NodeAddedEvent);
@@ -59,25 +59,25 @@ void vtkSlicerFeetSegmentationLogic::SetMRMLSceneInternal(vtkMRMLScene * newScen
 }
 
 //-----------------------------------------------------------------------------
-void vtkSlicerFeetSegmentationLogic::RegisterNodes()
+void vtkSlicerPCLTestLogic::RegisterNodes()
 {
   assert(this->GetMRMLScene() != 0);
 }
 
 //---------------------------------------------------------------------------
-void vtkSlicerFeetSegmentationLogic::UpdateFromMRMLScene()
+void vtkSlicerPCLTestLogic::UpdateFromMRMLScene()
 {
   assert(this->GetMRMLScene() != 0);
 }
 
 //---------------------------------------------------------------------------
-void vtkSlicerFeetSegmentationLogic
+void vtkSlicerPCLTestLogic
 ::OnMRMLSceneNodeAdded(vtkMRMLNode* vtkNotUsed(node))
 {
 }
 
 //---------------------------------------------------------------------------
-void vtkSlicerFeetSegmentationLogic
+void vtkSlicerPCLTestLogic
 ::OnMRMLSceneNodeRemoved(vtkMRMLNode* vtkNotUsed(node))
 {
 }

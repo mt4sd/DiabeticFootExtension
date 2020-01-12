@@ -19,54 +19,54 @@
 ==============================================================================*/
 
 // FooBar Widgets includes
-#include "qSlicerFeetSegmentationFooBarWidget.h"
-#include "ui_qSlicerFeetSegmentationFooBarWidget.h"
+#include "qSlicerPCLTestFooBarWidget.h"
+#include "ui_qSlicerPCLTestFooBarWidget.h"
 
 //-----------------------------------------------------------------------------
-/// \ingroup Slicer_QtModules_FeetSegmentation
-class qSlicerFeetSegmentationFooBarWidgetPrivate
-  : public Ui_qSlicerFeetSegmentationFooBarWidget
+/// \ingroup Slicer_QtModules_PCLTest
+class qSlicerPCLTestFooBarWidgetPrivate
+  : public Ui_qSlicerPCLTestFooBarWidget
 {
-  Q_DECLARE_PUBLIC(qSlicerFeetSegmentationFooBarWidget);
+  Q_DECLARE_PUBLIC(qSlicerPCLTestFooBarWidget);
 protected:
-  qSlicerFeetSegmentationFooBarWidget* const q_ptr;
+  qSlicerPCLTestFooBarWidget* const q_ptr;
 
 public:
-  qSlicerFeetSegmentationFooBarWidgetPrivate(
-    qSlicerFeetSegmentationFooBarWidget& object);
-  virtual void setupUi(qSlicerFeetSegmentationFooBarWidget*);
+  qSlicerPCLTestFooBarWidgetPrivate(
+    qSlicerPCLTestFooBarWidget& object);
+  virtual void setupUi(qSlicerPCLTestFooBarWidget*);
 };
 
 // --------------------------------------------------------------------------
-qSlicerFeetSegmentationFooBarWidgetPrivate
-::qSlicerFeetSegmentationFooBarWidgetPrivate(
-  qSlicerFeetSegmentationFooBarWidget& object)
+qSlicerPCLTestFooBarWidgetPrivate
+::qSlicerPCLTestFooBarWidgetPrivate(
+  qSlicerPCLTestFooBarWidget& object)
   : q_ptr(&object)
 {
 }
 
 // --------------------------------------------------------------------------
-void qSlicerFeetSegmentationFooBarWidgetPrivate
-::setupUi(qSlicerFeetSegmentationFooBarWidget* widget)
+void qSlicerPCLTestFooBarWidgetPrivate
+::setupUi(qSlicerPCLTestFooBarWidget* widget)
 {
-  this->Ui_qSlicerFeetSegmentationFooBarWidget::setupUi(widget);
+  this->Ui_qSlicerPCLTestFooBarWidget::setupUi(widget);
 }
 
 //-----------------------------------------------------------------------------
-// qSlicerFeetSegmentationFooBarWidget methods
+// qSlicerPCLTestFooBarWidget methods
 
 //-----------------------------------------------------------------------------
-qSlicerFeetSegmentationFooBarWidget
-::qSlicerFeetSegmentationFooBarWidget(QWidget* parentWidget)
+qSlicerPCLTestFooBarWidget
+::qSlicerPCLTestFooBarWidget(QWidget* parentWidget)
   : Superclass( parentWidget )
-  , d_ptr( new qSlicerFeetSegmentationFooBarWidgetPrivate(*this) )
+  , d_ptr( new qSlicerPCLTestFooBarWidgetPrivate(*this) )
 {
-  Q_D(qSlicerFeetSegmentationFooBarWidget);
+  Q_D(qSlicerPCLTestFooBarWidget);
   d->setupUi(this);
 }
 
 //-----------------------------------------------------------------------------
-qSlicerFeetSegmentationFooBarWidget
-::~qSlicerFeetSegmentationFooBarWidget()
+qSlicerPCLTestFooBarWidget
+::~qSlicerPCLTestFooBarWidget()
 {
 }
