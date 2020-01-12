@@ -1,8 +1,0 @@
-FeetSegmentation/Logic/vtkSlicerFeetSegmentationLogic.cxx
-FeetSegmentation/Logic/vtkSlicerFeetSegmentationLogic.h
-FeetSegmentation/Widgets/qSlicerFeetSegmentationFooBarWidget.cxx
-FeetSegmentation/Widgets/qSlicerFeetSegmentationFooBarWidget.h
-FeetSegmentation/qSlicerFeetSegmentationModule.cxx
-FeetSegmentation/qSlicerFeetSegmentationModule.h
-FeetSegmentation/qSlicerFeetSegmentationModuleWidget.cxx
-FeetSegmentation/qSlicerFeetSegmentationModuleWidget.h
