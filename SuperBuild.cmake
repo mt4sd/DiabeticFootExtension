@@ -20,6 +20,7 @@ set(proj ${SUPERBUILD_TOPLEVEL_PROJECT})
 # Project dependencies
 set(${proj}_DEPENDS
     PCL
+    Torch
    )
 
 ExternalProject_Include_Dependencies(${proj}

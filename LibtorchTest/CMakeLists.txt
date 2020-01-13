@@ -1,16 +1,18 @@
 
 #-----------------------------------------------------------------------------
-set(MODULE_NAME PCLTest)
+set(MODULE_NAME LibtorchTest)
 set(MODULE_TITLE ${MODULE_NAME})
 
 string(TOUPPER ${MODULE_NAME} MODULE_NAME_UPPER)
 
 #-----------------------------------------------------------------------------
-find_package(PCL REQUIRED)
-if (NOT PCL_FOUND)
-  message("PCL Library is not found. ${MODULE_NAME} will not be built.")
+find_package(Torch REQUIRED)
+if (NOT Torch_FOUND)
+  message("Torch Library is not found. ${MODULE_NAME} will not be built.")
   return()
 endif()
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 
 #-----------------------------------------------------------------------------
 add_subdirectory(Logic)
@@ -25,7 +27,7 @@ set(MODULE_INCLUDE_DIRECTORIES
   ${CMAKE_CURRENT_BINARY_DIR}/Logic
   ${CMAKE_CURRENT_SOURCE_DIR}/Widgets
   ${CMAKE_CURRENT_BINARY_DIR}/Widgets
-  ${PCL_INCLUDE_DIRS}
+  ${TORCH_INCLUDE_DIRS}
   )
 
 set(MODULE_SRCS
@@ -47,7 +49,7 @@ set(MODULE_UI_SRCS
 set(MODULE_TARGET_LIBRARIES
   vtkSlicer${MODULE_NAME}ModuleLogic
   qSlicer${MODULE_NAME}ModuleWidgets
-  ${PCL_LIBRARIES}
+  ${TORCH_LIBRARIES}
   )
 
 set(MODULE_RESOURCES

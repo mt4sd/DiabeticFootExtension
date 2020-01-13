@@ -19,8 +19,6 @@ set(SUPERBUILD_TOPLEVEL_PROJECT inner)
 # Extension dependencies
 find_package(Slicer REQUIRED)
 include(${Slicer_USE_FILE})
-#include(${Slicer_INCLUDE_DIR})
-
 
 mark_as_superbuild(Slicer_DIR)
 
@@ -39,6 +37,7 @@ endif()
 #-----------------------------------------------------------------------------
 # Extension modules
 add_subdirectory(PCLTest)
+add_subdirectory(LibtorchTest)
 ## NEXT_MODULE
 
 #-----------------------------------------------------------------------------
