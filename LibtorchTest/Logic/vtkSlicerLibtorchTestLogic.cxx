@@ -81,3 +81,11 @@ void vtkSlicerLibtorchTestLogic
 ::OnMRMLSceneNodeRemoved(vtkMRMLNode* vtkNotUsed(node))
 {
 }
+
+torch::Tensor vtkSlicerLibtorchTestLogic::tensorBinarize(torch::Tensor tensor, double threshold)
+{
+  if (threshold < 0 || threshold > 1)
+          throw std::invalid_argument("threshold values must be in the range [0, 1]");
+
+  return torch::where(tensor >= threshold, torch::ones(1), torch::zeros(1));
+}

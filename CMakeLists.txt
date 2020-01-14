@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(Paper)
+project(DiabeticFootExtension)
 
 #-----------------------------------------------------------------------------
 # Extension meta-information
-set(EXTENSION_HOMEPAGE "http://slicer.org/slicerWiki/index.php/Documentation/Nightly/Extensions/Paper")
-set(EXTENSION_CATEGORY "Examples")
-set(EXTENSION_CONTRIBUTORS "John Doe (AnyWare Corp.)")
-set(EXTENSION_DESCRIPTION "This is an example of an extension using SuperBuild to build a dependent project named Foo")
-set(EXTENSION_ICONURL "http://www.example.com/Slicer/Extensions/Paper.png")
-set(EXTENSION_SCREENSHOTURLS "http://www.example.com/Slicer/Extensions/Paper/Screenshots/1.png")
+set(EXTENSION_HOMEPAGE "http://slicer.org/slicerWiki/index.php/Documentation/Nightly/Extensions/DiabeticFootExtension")
+set(EXTENSION_CATEGORY "GTMA")
+set(EXTENSION_CONTRIBUTORS "Abián Hernández (GTMA - ULPGC)")
+set(EXTENSION_DESCRIPTION "This extension contains modules dedicated to research tasks for diabetic foot monitoring.")
+set(EXTENSION_ICONURL "http://www.example.com/Slicer/Extensions/DiabeticFootExtension.png")
+set(EXTENSION_SCREENSHOTURLS "http://www.example.com/Slicer/Extensions/DiabeticFootExtension/Screenshots/1.png")
 set(EXTENSION_DEPENDS "NA") # Specified as a space separated string, a list or 'NA' if any
 set(EXTENSION_BUILD_SUBDIRECTORY inner-build)
 
@@ -19,7 +19,6 @@ set(SUPERBUILD_TOPLEVEL_PROJECT inner)
 # Extension dependencies
 find_package(Slicer REQUIRED)
 include(${Slicer_USE_FILE})
-
 mark_as_superbuild(Slicer_DIR)
 
 find_package(Git REQUIRED)

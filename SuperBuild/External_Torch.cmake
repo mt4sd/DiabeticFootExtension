@@ -21,20 +21,15 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SYSTEM_${p
 
   ExternalProject_SetIfNotDefined(
    ${SUPERBUILD_TOPLEVEL_PROJECT}_${proj}_GIT_REPOSITORY
-  #  "${EP_GIT_PROTOCOL}://github.com/PointCloudLibrary/pcl.git"
-  #  "https://github.com/PointCloudLibrary/pcl.git"
    QUIET
    )
 
   ExternalProject_SetIfNotDefined(
    ${SUPERBUILD_TOPLEVEL_PROJECT}_${proj}_GIT_TAG
-  #  "pcl-1.9.1"
    QUIET
    )
 
   set(EP_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
-
-  message(${CMAKE_BINARY_DIR})
 
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}

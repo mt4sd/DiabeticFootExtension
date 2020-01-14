@@ -21,8 +21,7 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SYSTEM_${p
 
   ExternalProject_SetIfNotDefined(
    ${SUPERBUILD_TOPLEVEL_PROJECT}_${proj}_GIT_REPOSITORY
-  #  "${EP_GIT_PROTOCOL}://github.com/PointCloudLibrary/pcl.git"
-   "https://github.com/PointCloudLibrary/pcl.git"
+   "${EP_GIT_PROTOCOL}://github.com/PointCloudLibrary/pcl.git"
    QUIET
    )
 
@@ -48,7 +47,7 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SYSTEM_${p
       -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-      -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
+      -DCMAKE_C_FLAGS:STRING="${ep_common_c_flags} -fPIC" 
       -DWITH_QT:BOOL=ON
       -DQt5_DIR:PATH=${Qt5_DIR}
       -DWITH_VTK:BOOL=ON
@@ -99,7 +98,6 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SYSTEM_${p
     DEPENDS
       ${${proj}_DEPENDS}
     )
-  set(${proj}_DIR ${EP_BINARY_DIR})
 
   set(${proj}_DIR ${EP_INSTALL_DIR})
   if(UNIX)

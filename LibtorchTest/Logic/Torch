@@ -1,0 +1,8 @@
+/**
+* This file is used to include "torch/torch.h" file with Qt libraries 
+* where 'signal' generates several conflicts in Torch library
+*/
+
+#undef slots
+#include "torch/torch.h"
+#define slots Q_SLOTS 

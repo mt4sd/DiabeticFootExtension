@@ -23,10 +23,6 @@
 
 #include "qSlicerLibtorchTestModuleExport.h"
 
-#undef slots
-#include "torch/torch.h"
-#define slots Q_SLOTS
-
 class qSlicerLibtorchTestModulePrivate;
 
 /// \ingroup Slicer_QtModules_ExtensionTemplate
@@ -56,6 +52,8 @@ public:
 
   virtual QStringList categories()const;
   virtual QStringList dependencies() const;
+
+  void TorchTest();
 
 protected:
 

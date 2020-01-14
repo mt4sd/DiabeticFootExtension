@@ -115,3 +115,15 @@ vtkMRMLAbstractLogic* qSlicerLibtorchTestModule::createLogic()
 {
   return vtkSlicerLibtorchTestLogic::New();
 }
+
+void qSlicerLibtorchTestModule::TorchTest()
+{
+  auto test = torch::tensor({0.9, 0.8, 0.25, 0.3, 0.5});
+//  auto output = torch::threshold(myints, 0.75, 0);
+//  auto prueba = torch::where(test > 0.75, torch::ones(1), torch::zeros(1));
+//  auto prueba = output.where(output>0, output, );
+
+//  auto prueba = Utils::binarize(test, 0.5);
+
+  std::cout << test << std::endl;
+}

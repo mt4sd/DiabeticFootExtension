@@ -34,6 +34,7 @@
 
 #include "vtkSlicerLibtorchTestModuleLogicExport.h"
 
+#include <Torch>
 
 /// \ingroup Slicer_QtModules_ExtensionTemplate
 class VTK_SLICER_LIBTORCHTEST_MODULE_LOGIC_EXPORT vtkSlicerLibtorchTestLogic :
@@ -55,6 +56,8 @@ protected:
   virtual void UpdateFromMRMLScene();
   virtual void OnMRMLSceneNodeAdded(vtkMRMLNode* node);
   virtual void OnMRMLSceneNodeRemoved(vtkMRMLNode* node);
+
+  torch::Tensor tensorBinarize(torch::Tensor tensor, double threshold);
 private:
 
   vtkSlicerLibtorchTestLogic(const vtkSlicerLibtorchTestLogic&); // Not implemented
