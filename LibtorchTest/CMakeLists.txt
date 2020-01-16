@@ -13,6 +13,8 @@ if (NOT Torch_FOUND)
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
+# Export Torch target to Logic directory
+export(TARGETS torch_library APPEND FILE "Logic/${MODULE_NAME}Exports.cmake")
 
 #-----------------------------------------------------------------------------
 add_subdirectory(Logic)
@@ -27,7 +29,6 @@ set(MODULE_INCLUDE_DIRECTORIES
   ${CMAKE_CURRENT_BINARY_DIR}/Logic
   ${CMAKE_CURRENT_SOURCE_DIR}/Widgets
   ${CMAKE_CURRENT_BINARY_DIR}/Widgets
-  ${TORCH_INCLUDE_DIRS}
   )
 
 set(MODULE_SRCS
