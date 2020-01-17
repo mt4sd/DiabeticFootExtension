@@ -35,8 +35,9 @@ endif()
 
 #-----------------------------------------------------------------------------
 # Extension modules
-add_subdirectory(PCLTest)
-add_subdirectory(LibtorchTest)
+# add_subdirectory(PCLTest)
+# add_subdirectory(LibtorchTest)
+add_subdirectory(FeetSegmentation)
 ## NEXT_MODULE
 
 #-----------------------------------------------------------------------------
