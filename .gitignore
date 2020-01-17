@@ -1,2 +1,6 @@
+# CMake configuration
 CMakeLists.txt.user
+
+# Visual Studio Code configuration
 .vscode
+*.code-workspace
