@@ -18,6 +18,10 @@
 #ifndef __qSlicerFeetSegmentationModule_h
 #define __qSlicerFeetSegmentationModule_h
 
+// Slicer includes
+#include <vtkMRMLScalarVolumeNode.h>
+#include <vtkMRMLVectorVolumeNode.h>
+
 // SlicerQt includes
 #include "qSlicerLoadableModule.h"
 
@@ -53,6 +57,9 @@ public:
   virtual QStringList categories()const;
   virtual QStringList dependencies() const;
 
+public slots:
+  void updateInputParameters();
+
 protected:
 
   /// Initialize the module. Register the volumes reader/writer
@@ -71,6 +78,8 @@ private:
   Q_DECLARE_PRIVATE(qSlicerFeetSegmentationModule);
   Q_DISABLE_COPY(qSlicerFeetSegmentationModule);
 
+  vtkMRMLVectorVolumeNode * rgbInputVolumeNode;
+  vtkMRMLScalarVolumeNode * depthInputVolumeNode;
 };
 
 #endif

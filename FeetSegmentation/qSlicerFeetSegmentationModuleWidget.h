@@ -18,6 +18,10 @@
 #ifndef __qSlicerFeetSegmentationModuleWidget_h
 #define __qSlicerFeetSegmentationModuleWidget_h
 
+// Slicer includes
+#include <vtkMRMLScalarVolumeNode.h>
+#include <vtkMRMLVectorVolumeNode.h>
+
 // SlicerQt includes
 #include "qSlicerAbstractModuleWidget.h"
 
@@ -25,6 +29,12 @@
 
 class qSlicerFeetSegmentationModuleWidgetPrivate;
 class vtkMRMLNode;
+
+struct qSlicerFeetSegmentationModuleInputs
+{
+  vtkMRMLVectorVolumeNode * rgbInputVolumeNode;
+  vtkMRMLScalarVolumeNode * depthInputVolumeNode;
+};
 
 /// \ingroup Slicer_QtModules_ExtensionTemplate
 class Q_SLICER_QTMODULES_FEETSEGMENTATION_EXPORT qSlicerFeetSegmentationModuleWidget :
@@ -38,8 +48,13 @@ public:
   qSlicerFeetSegmentationModuleWidget(QWidget *parent=0);
   virtual ~qSlicerFeetSegmentationModuleWidget();
 
-public slots:
+  qSlicerFeetSegmentationModuleInputs getInputs();
 
+public slots:
+  void elTest();
+
+signals:
+  void currentInputChanged();
 
 protected:
   QScopedPointer<qSlicerFeetSegmentationModuleWidgetPrivate> d_ptr;

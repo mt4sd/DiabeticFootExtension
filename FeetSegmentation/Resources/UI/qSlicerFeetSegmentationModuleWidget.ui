@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>525</width>
-    <height>319</height>
+    <width>688</width>
+    <height>615</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,6 +24,16 @@
        <widget class="qSlicerFeetSegmentationFooBarWidget" name="FooBar" native="true"/>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="qSlicerFeetSegmentationIOWidget" name="IOWidget" native="true"/>
+   </item>
+   <item>
+    <widget class="QPushButton" name="testButton">
+     <property name="text">
+      <string>Test</string>
+     </property>
     </widget>
    </item>
    <item>
@@ -58,6 +68,12 @@
    <class>qSlicerFeetSegmentationFooBarWidget</class>
    <extends>QWidget</extends>
    <header>qSlicerFeetSegmentationFooBarWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>qSlicerFeetSegmentationIOWidget</class>
+   <extends>QWidget</extends>
+   <header>qSlicerFeetSegmentationIOWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

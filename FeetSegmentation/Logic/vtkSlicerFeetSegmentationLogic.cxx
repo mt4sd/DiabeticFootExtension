@@ -29,6 +29,8 @@
 // STD includes
 #include <cassert>
 
+#include <QDebug>
+
 //----------------------------------------------------------------------------
 vtkStandardNewMacro(vtkSlicerFeetSegmentationLogic);
 
@@ -88,4 +90,9 @@ torch::Tensor vtkSlicerFeetSegmentationLogic::tensorBinarize(torch::Tensor tenso
           throw std::invalid_argument("threshold values must be in the range [0, 1]");
 
   return torch::where(tensor >= threshold, torch::ones(1), torch::zeros(1));
+}
+
+void vtkSlicerFeetSegmentationLogic::myBuildingTest(int idx)
+{
+  qDebug() << "esto es un simple test";
 }

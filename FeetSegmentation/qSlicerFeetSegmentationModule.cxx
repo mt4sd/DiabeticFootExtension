@@ -22,6 +22,9 @@
 #include "qSlicerFeetSegmentationModule.h"
 #include "qSlicerFeetSegmentationModuleWidget.h"
 
+//To remove
+#include <QDebug>
+
 //-----------------------------------------------------------------------------
 #if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
 #include <QtPlugin>
@@ -51,6 +54,7 @@ qSlicerFeetSegmentationModulePrivate::qSlicerFeetSegmentationModulePrivate()
 qSlicerFeetSegmentationModule::qSlicerFeetSegmentationModule(QObject* _parent)
   : Superclass(_parent)
   , d_ptr(new qSlicerFeetSegmentationModulePrivate)
+  , rgbInputVolumeNode(nullptr), depthInputVolumeNode(nullptr)
 {
 }
 
@@ -114,4 +118,16 @@ qSlicerAbstractModuleRepresentation* qSlicerFeetSegmentationModule
 vtkMRMLAbstractLogic* qSlicerFeetSegmentationModule::createLogic()
 {
   return vtkSlicerFeetSegmentationLogic::New();
+}
+
+void qSlicerFeetSegmentationModule::updateInputParameters()
+{
+  qSlicerFeetSegmentationModuleInputs inputs = static_cast<qSlicerFeetSegmentationModuleWidget *>(this->widgetRepresentation())->getInputs();
+  if (inputs.rgbInputVolumeNode)
+    qDebug() << inputs.rgbInputVolumeNode->GetID();
+
+  if (inputs.depthInputVolumeNode)
+    qDebug() << inputs.depthInputVolumeNode->GetID();
+
+//  static_cast<qSlicerFeetSegmentationModuleWidget *>(widgetRepresentation())->get
 }

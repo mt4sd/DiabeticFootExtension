@@ -24,6 +24,9 @@
 #ifndef __vtkSlicerFeetSegmentationLogic_h
 #define __vtkSlicerFeetSegmentationLogic_h
 
+// To remove
+#include <QDebug>
+
 // Slicer includes
 #include "vtkSlicerModuleLogic.h"
 
@@ -48,6 +51,9 @@ public:
   void PrintSelf(ostream& os, vtkIndent indent);
 
   torch::Tensor tensorBinarize(torch::Tensor tensor, double threshold);
+  void myBuildingTest(int idx=0);
+
+  void test() { qDebug() << "Hola, soy el test de la lógica!!"; } ;
 
 protected:
   vtkSlicerFeetSegmentationLogic();
