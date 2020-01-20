@@ -93,7 +93,7 @@ void qSlicerFeetSegmentationModuleWidget::setup()
   );
 
   QObject::connect(
-    d->testButton, SIGNAL(clicked()), this, SLOT(elTest())
+    d->applyButton, SIGNAL(clicked()), this, SLOT(elTest())
   );
 }
 

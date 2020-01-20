@@ -21,6 +21,7 @@ export(TARGETS torch_library APPEND FILE "Logic/${MODULE_NAME}Exports.cmake")
 #-----------------------------------------------------------------------------
 add_subdirectory(Logic)
 add_subdirectory(Widgets)
+add_subdirectory(Resources/TorchScript)
 
 #-----------------------------------------------------------------------------
 set(MODULE_EXPORT_DIRECTIVE "Q_SLICER_QTMODULES_${MODULE_NAME_UPPER}_EXPORT")

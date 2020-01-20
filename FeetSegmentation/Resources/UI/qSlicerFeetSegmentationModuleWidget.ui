@@ -30,9 +30,9 @@
     <widget class="qSlicerFeetSegmentationIOWidget" name="IOWidget" native="true"/>
    </item>
    <item>
-    <widget class="QPushButton" name="testButton">
+    <widget class="QPushButton" name="applyButton">
      <property name="text">
-      <string>Test</string>
+      <string>Apply</string>
      </property>
     </widget>
    </item>
