@@ -37,7 +37,7 @@
 
 #include <Torch>
 #include "vtkSlicerFeetSegmentationModuleLogicExport.h"
-
+#include "FeetSegmentation.h"
 
 
 /// \ingroup Slicer_QtModules_ExtensionTemplate
@@ -51,9 +51,8 @@ public:
   void PrintSelf(ostream& os, vtkIndent indent);
 
   torch::Tensor tensorBinarize(torch::Tensor tensor, double threshold);
-  void myBuildingTest(int idx=0);
 
-  void test() { qDebug() << "Hola, soy el test de la lógica!!"; } ;
+  void test();
 
 protected:
   vtkSlicerFeetSegmentationLogic();

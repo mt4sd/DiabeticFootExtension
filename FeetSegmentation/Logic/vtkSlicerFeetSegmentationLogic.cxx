@@ -17,6 +17,7 @@
 
 // FeetSegmentation Logic includes
 #include "vtkSlicerFeetSegmentationLogic.h"
+#include "FeetSegmentation.h"
 
 // MRML includes
 #include <vtkMRMLScene.h>
@@ -92,7 +93,12 @@ torch::Tensor vtkSlicerFeetSegmentationLogic::tensorBinarize(torch::Tensor tenso
   return torch::where(tensor >= threshold, torch::ones(1), torch::zeros(1));
 }
 
-void vtkSlicerFeetSegmentationLogic::myBuildingTest(int idx)
+#include "Utils.h"
+void vtkSlicerFeetSegmentationLogic::test()
 {
-  qDebug() << "esto es un simple test";
+  FeetSegmentation torchModel = FeetSegmentation();
+  std::vector<QImage> results = torchModel.predict("/home/abian/Data/Tools/Slicer/Modules/DiabeticFootExtension/FeetSegmentation/Testing/Dataset/visible/");
+
+  results[0].save("itsTheFinalTest.png");
 }
+
