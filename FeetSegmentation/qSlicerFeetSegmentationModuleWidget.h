@@ -62,11 +62,18 @@ public:
    */
   vtkMRMLScalarVolumeNode * getDepthInputNode();
 
+  /**
+   * @brief getOutputNode
+   * @return
+   */
+  vtkMRMLScalarVolumeNode * getOutputNode();
+
 
 public slots:
   /* Slots for testing */
   void elTest();
   void vtkToTensorTest();
+  void pclTest();
 
 signals:
   void currentInputChanged();

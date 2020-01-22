@@ -1,5 +1,11 @@
 #include "Utils.h"
 
+// VTK Includes
+#include <vtkSmartPointer.h>
+
+// Temporal Includes
+#include <QDebug>
+
 torch::Tensor Utils::qImageToTensor(QImage &img)
 {
     if (img.format() != QImage::Format_RGB888)
@@ -54,6 +60,24 @@ QImage Utils::tensorToQImage(torch::Tensor &tensor, QImage::Format format){
     return img;
 }
 
+vtkImageData* Utils::tensorToVtkImage(torch::Tensor &tensor)
+{
+  torch::Tensor _tensor = tensor.permute({1, 2, 0});
+  _tensor = _tensor.mul(255).clamp(0, 255).to(torch::kU8);
+
+  vtkImageData *img = vtkImageData::New();
+
+  img->SetDimensions(_tensor.size(1), _tensor.size(0), 1);
+  img->SetSpacing(1.0, 1.0, 1.0);
+  img->SetOrigin(.0, .0, .0);
+
+  img->AllocateScalars(VTK_UNSIGNED_CHAR, 1);
+
+  std::memcpy(img->GetScalarPointer(), _tensor.data_ptr(), sizeof(torch::kU8) * _tensor.numel());
+
+  return img;
+}
+
 QStringList Utils::absoluteDir(QDir root, QStringList filenames)
 {
   QString absoluteDir = root.absolutePath();
@@ -65,10 +89,36 @@ QStringList Utils::absoluteDir(QDir root, QStringList filenames)
   return filenames;
 }
 
+//----------------------------------------------------------
 torch::Tensor Utils::binarize(torch::Tensor &tensor, double threshold)
 {
     if (threshold < 0 || threshold > 1)
         throw std::invalid_argument("threshold values must be in the range [0, 1]");
 
     return torch::where(tensor >= threshold, torch::ones(1), torch::zeros(1));
+}
+
+//----------------------------------------------------------
+#include <pcl/io/pcd_io.h>
+pcl::PointCloud<pcl::PointXYZ> Utils::vtkImageToPointCloud(vtkImageData *depthImg)
+{
+  qDebug() << "Aqué estoy!...";
+  uint16_t *data = reinterpret_cast<uint16_t *>(depthImg->GetScalarPointer());
+  int *dimensions = depthImg->GetDimensions();
+
+  pcl::PointCloud<pcl::PointXYZ> pointCloud;
+
+  qDebug() << "Voy a entrar a los bucles, deseame suerte!...";
+  for (int x = 0; x < dimensions[0]; ++x)
+  {
+    for (int y=0; y < dimensions[1]; ++y)
+    {
+      uint16_t depthPixel = data[ y * dimensions[0] + x];
+      pointCloud.push_back(pcl::PointXYZ(x, y, depthPixel));
+    }
+  }
+
+  //tmp
+  pcl::io::savePCDFile("test.pcd", pointCloud);
+  return pointCloud;
 }

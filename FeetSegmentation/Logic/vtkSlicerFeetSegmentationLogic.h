@@ -71,7 +71,9 @@ public:
   torch::Tensor qImageToTensor(QImage &img);
   void test();
 
-  void torchVTKTest(vtkMRMLVectorVolumeNode *node);
+  void torchVTKTest(vtkMRMLVectorVolumeNode *node, vtkMRMLScalarVolumeNode *outputNode);
+
+  void pointCloudTest(vtkMRMLScalarVolumeNode *depthNode);
 
 protected:
   vtkSlicerFeetSegmentationLogic();

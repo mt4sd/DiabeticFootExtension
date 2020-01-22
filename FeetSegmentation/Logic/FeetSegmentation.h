@@ -16,7 +16,7 @@ public:
   explicit FeetSegmentation();
 
   std::vector<QImage> predict(QString datasetDir, size_t batchSize=4);
-  std::vector<QImage> predict(vtkMRMLVectorVolumeNode *datasetNode, size_t batchSize=4);
+  std::vector<vtkImageData *> predict(vtkMRMLVectorVolumeNode *datasetNode, size_t batchSize=4);
 //  void predict(QString outputDir, QString datasetDir, size_t batchSize=4);
 
 private:

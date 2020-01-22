@@ -90,6 +90,10 @@ void qSlicerFeetSegmentationModuleWidget::setup()
   QObject::connect(
     d->vtkToTensorButton, SIGNAL(clicked()), this, SLOT(vtkToTensorTest())
   );
+
+  QObject::connect(
+    d->pclTestButton, SIGNAL(clicked()), this, SLOT(pclTest())
+  );
 }
 
 //-----------------------------------------------------------------------------
@@ -118,19 +122,25 @@ vtkMRMLScalarVolumeNode * qSlicerFeetSegmentationModuleWidget::getDepthInputNode
 }
 
 //-----------------------------------------------------------------------------
+vtkMRMLScalarVolumeNode * qSlicerFeetSegmentationModuleWidget::getOutputNode()
+{
+  Q_D(qSlicerFeetSegmentationModuleWidget);
+  return d->IOWidget->getOutputNode();
+}
+
+//-----------------------------------------------------------------------------
 void qSlicerFeetSegmentationModuleWidget::elTest()
 {
   Q_D(qSlicerFeetSegmentationModuleWidget);
-//  d->logic()->test();
 
   vtkMRMLVectorVolumeNode *dataset = getRGBInputNode();
   if (dataset != nullptr)
-    d->logic()->torchVTKTest(dataset);
-
+    d->logic()->torchVTKTest(dataset, getOutputNode());
 }
 
 //-----------------------------------------------------------------------------
 #include <QImage>
+// ¡¡¡ To remove !!!!
 void qSlicerFeetSegmentationModuleWidget::vtkToTensorTest()
 {
   Q_D(qSlicerFeetSegmentationModuleWidget);
@@ -141,4 +151,12 @@ void qSlicerFeetSegmentationModuleWidget::vtkToTensorTest()
   torch::Tensor result = vtkTensor - qTensor;
 
   std::cout << result.slice(0, 0, 3) << std::endl;
+}
+
+void qSlicerFeetSegmentationModuleWidget::pclTest()
+{
+  Q_D(qSlicerFeetSegmentationModuleWidget);
+  vtkMRMLScalarVolumeNode *depthNode = getDepthInputNode();
+  qDebug() << "Allé voy!...";
+  d->logic()->pointCloudTest(depthNode);
 }

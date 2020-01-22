@@ -121,10 +121,22 @@ vtkMRMLVectorVolumeNode * qSlicerFeetSegmentationIOWidget::getRGBInputNode()
 
 vtkMRMLScalarVolumeNode * qSlicerFeetSegmentationIOWidget::getDepthInputNode()
 {
-  vtkMRMLScalarVolumeNode * output = static_cast<vtkMRMLScalarVolumeNode *>(d_ptr->rgbInputNodeSelector->currentNode());
+  vtkMRMLScalarVolumeNode * output = static_cast<vtkMRMLScalarVolumeNode *>(d_ptr->depthInputNodeSelector->currentNode());
   if (output == NULL)
     return nullptr;
 
   return output;
 }
+
+vtkMRMLScalarVolumeNode * qSlicerFeetSegmentationIOWidget::getOutputNode()
+{
+  vtkMRMLScalarVolumeNode * output = static_cast<vtkMRMLScalarVolumeNode *>(d_ptr->resultOutputNodeSelector->currentNode());
+  if (output == NULL){
+    d_ptr->resultOutputNodeSelector->addNode();
+    output = static_cast<vtkMRMLScalarVolumeNode *>(d_ptr->resultOutputNodeSelector->currentNode());
+  }
+
+  return output;
+}
+
 

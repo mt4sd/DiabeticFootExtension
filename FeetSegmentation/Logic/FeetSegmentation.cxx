@@ -4,6 +4,8 @@
 #include "Utils.h"
 #include <torch/script.h>
 
+#include <QDebug>
+
 FeetSegmentation::FeetSegmentation() :
   device(torch::cuda::is_available() ? torch::kCUDA : torch::kCPU),
   normalize(torch::data::transforms::Normalize<>({0.485, 0.456, 0.406}, {0.229, 0.224, 0.225}))
@@ -63,15 +65,10 @@ std::vector<QImage> FeetSegmentation::predict(QString datasetDir, size_t batchSi
     return results;
 }
 
-std::vector<QImage> FeetSegmentation::predict(vtkMRMLVectorVolumeNode *datasetNode, size_t batchSize)
+std::vector<vtkImageData *> FeetSegmentation::predict(vtkMRMLVectorVolumeNode *datasetNode, size_t batchSize)
 {
   std::vector<torch::Tensor> batchResults;
-  std::vector<QImage> results;
-
-//    InvNormalize<> invNorm({0.485, 0.456, 0.406}, {0.229, 0.224, 0.225});
-
-//    if (model.name().name() != "TernausNet")
-//        return results;
+  std::vector<vtkImageData *> results;
 
   auto dataset = vtkFeetSegmentationDataset(datasetNode)
           .map(normalize)
@@ -98,7 +95,7 @@ std::vector<QImage> FeetSegmentation::predict(vtkMRMLVectorVolumeNode *datasetNo
       batchResults.push_back(outputTensor.detach().to(torch::kCPU));
   }
 
-
+  qDebug() << "Tengo los tensores resultantes...";
   for (std::vector<torch::Tensor>::iterator batchIt = batchResults.begin();
        batchIt != batchResults.end();
        ++batchIt)
@@ -106,7 +103,8 @@ std::vector<QImage> FeetSegmentation::predict(vtkMRMLVectorVolumeNode *datasetNo
       for (size_t imgIdx = 0; imgIdx < (*batchIt).size(0); ++imgIdx){
           torch::Tensor img = (*batchIt)[imgIdx];
           img = Utils::binarize(img, 0.75);
-          results.push_back(Utils::tensorToQImage(img, QImage::Format_Grayscale8));
+          qDebug() << "Voy a proceder a convertir la imagen...";
+          results.push_back(Utils::tensorToVtkImage(img));
       }
   }
 

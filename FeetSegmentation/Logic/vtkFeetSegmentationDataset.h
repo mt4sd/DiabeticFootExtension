@@ -22,7 +22,6 @@ public:
   torch::data::Example<> get(size_t index) override;
 
   // Override the size method to infer the size of the data set.
-  // TODO!!!!
   torch::optional<size_t> size() const override { return data->GetImageData()->GetDimensions()[2]; }
 
 private:

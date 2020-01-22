@@ -19,7 +19,7 @@ torch::data::Example<> vtkFeetSegmentationDataset::get(size_t index)
   vtkImageData * img = data->GetImageData();
 
   //resize image
-  resize->SetInputData(img);
+  resize->SetInputData(data->GetImageData());
   resize->SetOutputDimensions(shape.width(), shape.height(), 1);
   resize->Update();
 

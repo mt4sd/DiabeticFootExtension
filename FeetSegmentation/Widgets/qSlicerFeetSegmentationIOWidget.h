@@ -45,6 +45,7 @@ public:
 
   vtkMRMLVectorVolumeNode * getRGBInputNode();
   vtkMRMLScalarVolumeNode * getDepthInputNode();
+  vtkMRMLScalarVolumeNode * getOutputNode();
 
 signals:
   void currentInputChanged();

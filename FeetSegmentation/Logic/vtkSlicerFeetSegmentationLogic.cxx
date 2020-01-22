@@ -159,12 +159,35 @@ void vtkSlicerFeetSegmentationLogic::test()
   results[0].save("itsTheFinalTest.png");
 }
 
-void vtkSlicerFeetSegmentationLogic::torchVTKTest(vtkMRMLVectorVolumeNode *node)
+void vtkSlicerFeetSegmentationLogic::torchVTKTest(vtkMRMLVectorVolumeNode *inputNode, vtkMRMLScalarVolumeNode *outputNode)
 {
   FeetSegmentation torchModel = FeetSegmentation();
-  std::vector<QImage> results = torchModel.predict(node);
+  std::vector<vtkImageData *> results = torchModel.predict(inputNode);
+  outputNode->SetAndObserveImageData(results[0]);
 
-  qDebug() << results.size();
-  results[0].save("itsTheFinalVTKTest.png");
+  //Resize.... meh!
+//  vtkSmartPointer<vtkImageResize> resize =
+//      vtkSmartPointer<vtkImageResize>::New();
+
+//  resize->SetInputData(results[0]);
+//  resize->SetOutputDimensions(inputNode->GetImageData()->GetDimensions());
+//  resize->Update();
+//  vtkImageData *resizedImg = resize->GetOutput();
+
+//  int* data = inputNode->GetImageData()->GetDimensions();
+//  qDebug() << "Dimension[0]: " << data[0];
+//  qDebug() << "Dimension[1]: "<< data[1];
+
+
+//  outputNode->SetAndObserveImageData(resizedImg);
+
+  outputNode->SetIJKToRASDirections(-1,0,0,0,-1,0,0,0,1);
+  outputNode->SetOrigin(inputNode->GetOrigin());
+  outputNode->SetSpacing(inputNode->GetSpacing());
 }
 
+#include <pcl/point_cloud.h>
+void vtkSlicerFeetSegmentationLogic::pointCloudTest(vtkMRMLScalarVolumeNode *depthNode)
+{
+  Utils::vtkImageToPointCloud(depthNode->GetImageData());
+}
