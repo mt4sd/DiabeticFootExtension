@@ -50,8 +50,23 @@ public:
 
   qSlicerFeetSegmentationModuleInputs getInputs();
 
+  /**
+   * @brief getRGBInput
+   * @return
+   */
+  vtkMRMLVectorVolumeNode * getRGBInputNode();
+
+  /**
+   * @brief getDepthInputNode
+   * @return
+   */
+  vtkMRMLScalarVolumeNode * getDepthInputNode();
+
+
 public slots:
+  /* Slots for testing */
   void elTest();
+  void vtkToTensorTest();
 
 signals:
   void currentInputChanged();

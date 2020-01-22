@@ -1,11 +1,12 @@
 #ifndef __FeetSegmentation_h
 #define __FeetSegmentation_h
 
-//#include <vector>
-
 // Qt Includes
 #include <QString>
 #include <QImage>
+
+// MRML Includes
+#include <vtkMRMLVectorVolumeNode.h>
 
 #include <Torch>
 
@@ -15,6 +16,7 @@ public:
   explicit FeetSegmentation();
 
   std::vector<QImage> predict(QString datasetDir, size_t batchSize=4);
+  std::vector<QImage> predict(vtkMRMLVectorVolumeNode *datasetNode, size_t batchSize=4);
 //  void predict(QString outputDir, QString datasetDir, size_t batchSize=4);
 
 private:

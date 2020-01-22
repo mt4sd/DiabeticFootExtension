@@ -35,10 +35,6 @@ protected:
 public:
   qSlicerFeetSegmentationModuleWidgetPrivate(qSlicerFeetSegmentationModuleWidget &obj);
   vtkSlicerFeetSegmentationLogic* logic() const;
-
-public slots:
-  void test();
-
 };
 
 //-----------------------------------------------------------------------------
@@ -56,11 +52,6 @@ vtkSlicerFeetSegmentationLogic* qSlicerFeetSegmentationModuleWidgetPrivate::logi
   return vtkSlicerFeetSegmentationLogic::SafeDownCast(q->logic());
 }
 
-void qSlicerFeetSegmentationModuleWidgetPrivate::test()
-{
-  logic()->test();
-}
-
 //-----------------------------------------------------------------------------
 // qSlicerFeetSegmentationModuleWidget methods
 
@@ -74,8 +65,7 @@ qSlicerFeetSegmentationModuleWidget::qSlicerFeetSegmentationModuleWidget(QWidget
 
 //-----------------------------------------------------------------------------
 qSlicerFeetSegmentationModuleWidget::~qSlicerFeetSegmentationModuleWidget()
-{
-}
+{}
 
 //-----------------------------------------------------------------------------
 void qSlicerFeetSegmentationModuleWidget::setup()
@@ -92,11 +82,17 @@ void qSlicerFeetSegmentationModuleWidget::setup()
       [=]() { qDebug() << "La prueba!"; emit currentInputChanged(); }
   );
 
+  /* Test buttons */
   QObject::connect(
     d->applyButton, SIGNAL(clicked()), this, SLOT(elTest())
   );
+
+  QObject::connect(
+    d->vtkToTensorButton, SIGNAL(clicked()), this, SLOT(vtkToTensorTest())
+  );
 }
 
+//-----------------------------------------------------------------------------
 qSlicerFeetSegmentationModuleInputs qSlicerFeetSegmentationModuleWidget::getInputs()
 {
   Q_D(qSlicerFeetSegmentationModuleWidget);
@@ -107,9 +103,42 @@ qSlicerFeetSegmentationModuleInputs qSlicerFeetSegmentationModuleWidget::getInpu
   return inputs;
 }
 
+//-----------------------------------------------------------------------------
+vtkMRMLVectorVolumeNode * qSlicerFeetSegmentationModuleWidget::getRGBInputNode()
+{
+  Q_D(qSlicerFeetSegmentationModuleWidget);
+  return d->IOWidget->getRGBInputNode();
+}
+
+//-----------------------------------------------------------------------------
+vtkMRMLScalarVolumeNode * qSlicerFeetSegmentationModuleWidget::getDepthInputNode()
+{
+  Q_D(qSlicerFeetSegmentationModuleWidget);
+  return d->IOWidget->getDepthInputNode();
+}
+
+//-----------------------------------------------------------------------------
 void qSlicerFeetSegmentationModuleWidget::elTest()
 {
   Q_D(qSlicerFeetSegmentationModuleWidget);
-  d->logic()->test();
+//  d->logic()->test();
+
+  vtkMRMLVectorVolumeNode *dataset = getRGBInputNode();
+  if (dataset != nullptr)
+    d->logic()->torchVTKTest(dataset);
+
 }
 
+//-----------------------------------------------------------------------------
+#include <QImage>
+void qSlicerFeetSegmentationModuleWidget::vtkToTensorTest()
+{
+  Q_D(qSlicerFeetSegmentationModuleWidget);
+  torch::Tensor vtkTensor = d->logic()->torchSegmentation(getRGBInputNode());
+  QImage asd("/home/abian/Data/Tools/Slicer/Modules/DiabeticFootExtension/FeetSegmentation/Testing/Dataset/visible/G01_SID0001_190227_105842_918_ColorRGB.png");
+  torch::Tensor qTensor = d->logic()->qImageToTensor(asd);
+
+  torch::Tensor result = vtkTensor - qTensor;
+
+  std::cout << result.slice(0, 0, 3) << std::endl;
+}

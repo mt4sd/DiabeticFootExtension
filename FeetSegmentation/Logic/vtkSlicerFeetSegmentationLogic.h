@@ -26,11 +26,13 @@
 
 // To remove
 #include <QDebug>
+#include <QImage>
 
 // Slicer includes
 #include "vtkSlicerModuleLogic.h"
 
 // MRML includes
+#include "vtkMRMLVectorVolumeNode.h"
 
 // STD includes
 #include <cstdlib>
@@ -50,9 +52,26 @@ public:
   vtkTypeMacro(vtkSlicerFeetSegmentationLogic, vtkSlicerModuleLogic);
   void PrintSelf(ostream& os, vtkIndent indent);
 
+  /**
+   * @brief torchSegmentation
+   * @param input
+   */
+  //void torchSegmentation(vtkMRMLVectorVolumeNode *input);
+  torch::Tensor torchSegmentation(vtkMRMLVectorVolumeNode *input);
+
+  /**
+   * @brief tensorBinarize, binarize a tensor input by thresholding
+   * @param tensor
+   * @param threshold
+   * @return mask tensor
+   */
   torch::Tensor tensorBinarize(torch::Tensor tensor, double threshold);
 
+  // Tmp
+  torch::Tensor qImageToTensor(QImage &img);
   void test();
+
+  void torchVTKTest(vtkMRMLVectorVolumeNode *node);
 
 protected:
   vtkSlicerFeetSegmentationLogic();
@@ -65,6 +84,11 @@ protected:
   virtual void OnMRMLSceneNodeAdded(vtkMRMLNode* node);
   virtual void OnMRMLSceneNodeRemoved(vtkMRMLNode* node);
 private:
+  /**
+   * @brief vtkImageToTensor
+   * @param data
+   */
+  torch::Tensor vtkImageToTensor(vtkImageData *data);
 
   vtkSlicerFeetSegmentationLogic(const vtkSlicerFeetSegmentationLogic&); // Not implemented
   void operator=(const vtkSlicerFeetSegmentationLogic&); // Not implemented

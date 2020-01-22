@@ -20,6 +20,27 @@ torch::Tensor Utils::qImageToTensor(QImage &img)
     return imgTensor;
 }
 
+torch::Tensor Utils::vtkImageToTensor(vtkImageData *img)
+{
+  int *imgSize = img->GetDimensions();
+
+  int nPixels = imgSize[0]*imgSize[1]*img->GetNumberOfScalarComponents();
+  uint8_t *bits = reinterpret_cast<uint8_t *>(img->GetScalarPointer());
+
+  torch::Tensor tmpTensor = torch::from_blob(bits, {nPixels},
+                                              torch::kByte).clone();
+
+  torch::Tensor imgTensor = torch::zeros({3, imgSize[1], imgSize[0]});
+  imgTensor.slice(0, 0, 1) = tmpTensor.slice(0, 0, nPixels, 3).reshape({1, imgSize[1], imgSize[0]});
+  imgTensor.slice(0, 1, 2) = tmpTensor.slice(0, 1, nPixels, 3).reshape({1, imgSize[1], imgSize[0]});
+  imgTensor.slice(0, 2, 3) = tmpTensor.slice(0, 2, nPixels, 3).reshape({1, imgSize[1], imgSize[0]});
+
+  imgTensor = imgTensor.to(torch::kFloat32);
+  imgTensor /= 255;
+
+  return imgTensor;
+}
+
 QImage Utils::tensorToQImage(torch::Tensor &tensor, QImage::Format format){
     torch::Tensor _tensor = tensor.permute({1, 2, 0});
     _tensor = _tensor.mul(255).clamp(0, 255).to(torch::kU8);
@@ -28,7 +49,7 @@ QImage Utils::tensorToQImage(torch::Tensor &tensor, QImage::Format format){
     _tensor = _tensor.flatten();
     std::memcpy((void *) img.bits(), _tensor.data_ptr(), sizeof(torch::kU8) * _tensor.numel());
 
-    img.save("prueba.png");
+    img.save("vtkPrueba.png");
 
     return img;
 }

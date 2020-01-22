@@ -5,6 +5,9 @@
 #include <QDir>
 #include <Torch>
 
+// VTK Includes
+#include <vtkImageData.h>
+
 class Utils
 {
 public:
@@ -14,6 +17,8 @@ public:
    * @return
    */
   static torch::Tensor qImageToTensor(QImage &img);
+
+  static torch::Tensor vtkImageToTensor(vtkImageData *img);
 
   /**
    * @brief tensorToQImage

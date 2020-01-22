@@ -112,18 +112,19 @@ void qSlicerFeetSegmentationIOWidget::inputChanged()
 vtkMRMLVectorVolumeNode * qSlicerFeetSegmentationIOWidget::getRGBInputNode()
 {
   vtkMRMLVectorVolumeNode * output = static_cast<vtkMRMLVectorVolumeNode *>(d_ptr->rgbInputNodeSelector->currentNode());
-  if (output)
-    return output;
+  std::cout << output;
+  if (output == NULL)
+    return nullptr;
 
-  return nullptr;
+  return output;
 }
 
 vtkMRMLScalarVolumeNode * qSlicerFeetSegmentationIOWidget::getDepthInputNode()
 {
   vtkMRMLScalarVolumeNode * output = static_cast<vtkMRMLScalarVolumeNode *>(d_ptr->rgbInputNodeSelector->currentNode());
-  if (output)
-    return output;
+  if (output == NULL)
+    return nullptr;
 
-  return nullptr;
+  return output;
 }
 

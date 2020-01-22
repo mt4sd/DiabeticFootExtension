@@ -3,9 +3,12 @@
 
 #include <Torch>
 
-// Qt includes
+// Qt Includes
 #include <QStringList>
 #include <QSize>
+
+// MRMLM Includes
+#include "vtkMRMLVectorVolumeNode.h"
 
 class FeetSegmentationDataset : public torch::data::Dataset<FeetSegmentationDataset>
 {
@@ -23,8 +26,6 @@ private:
   QSize shape;
 
   QStringList readData(const QString &imgDir);
-
-
 };
 
 #endif // __FeetSegmentationDataset_h

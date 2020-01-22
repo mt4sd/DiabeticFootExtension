@@ -8,9 +8,7 @@
 
 FeetSegmentationDataset::FeetSegmentationDataset(QString &imgDir)
   : imgLocation(readData(imgDir)), shape(512,512)
-{
-
-}
+{}
 
 torch::data::Example<> FeetSegmentationDataset::get(size_t index)
 {

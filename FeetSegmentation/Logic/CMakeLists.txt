@@ -16,6 +16,8 @@ set(${KIT}_SRCS
   ${MODULE_NAME}.h
   ${MODULE_NAME}Dataset.h
   ${MODULE_NAME}Dataset.cxx
+  vtk${MODULE_NAME}Dataset.h
+  vtk${MODULE_NAME}Dataset.cxx
   Utils.h
   Utils.cxx
 )
@@ -24,6 +26,7 @@ set(${KIT}_TARGET_LIBRARIES
   ${TORCH_LIBRARIES}
   ${PCL_LIBRARIES}
   ${ITK_LIBRARIES}
+  ${VTK_LIBRARIES}
 )
 
 #-----------------------------------------------------------------------------

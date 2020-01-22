@@ -26,6 +26,7 @@
 #include <vtkIntArray.h>
 #include <vtkNew.h>
 #include <vtkObjectFactory.h>
+#include <vtkImageData.h>
 
 // STD includes
 #include <cassert>
@@ -85,6 +86,19 @@ void vtkSlicerFeetSegmentationLogic
 {
 }
 
+torch::Tensor vtkSlicerFeetSegmentationLogic::torchSegmentation(vtkMRMLVectorVolumeNode *input)
+{
+  if (input == nullptr)
+    return torch::zeros({1});
+
+  vtkImageData *rgbImg = input->GetImageData();
+  torch::Tensor tensor = vtkImageToTensor(rgbImg);
+
+  // Meh
+  return tensor;
+  //TODO
+}
+
 torch::Tensor vtkSlicerFeetSegmentationLogic::tensorBinarize(torch::Tensor tensor, double threshold)
 {
   if (threshold < 0 || threshold > 1)
@@ -93,12 +107,64 @@ torch::Tensor vtkSlicerFeetSegmentationLogic::tensorBinarize(torch::Tensor tenso
   return torch::where(tensor >= threshold, torch::ones(1), torch::zeros(1));
 }
 
+torch::Tensor vtkSlicerFeetSegmentationLogic::vtkImageToTensor(vtkImageData *data)
+{
+  int *imgSize = data->GetDimensions();
+
+  int nPixels = imgSize[0]*imgSize[1]*data->GetNumberOfScalarComponents();
+  uint8_t *bits = reinterpret_cast<uint8_t *>(data->GetScalarPointer());
+
+  torch::Tensor tmpTensor = torch::from_blob(bits, {nPixels},
+                                              torch::kByte).clone();
+
+  //img.size().rheight() = imgSize[1]
+  //img.size().rwidth() = imgSize[0]
+  torch::Tensor imgTensor = torch::zeros({3, imgSize[1], imgSize[0]});
+  imgTensor.slice(0, 0, 1) = tmpTensor.slice(0, 0, nPixels, 3).reshape({1, imgSize[1], imgSize[0]});
+  imgTensor.slice(0, 1, 2) = tmpTensor.slice(0, 1, nPixels, 3).reshape({1, imgSize[1], imgSize[0]});
+  imgTensor.slice(0, 2, 3) = tmpTensor.slice(0, 2, nPixels, 3).reshape({1, imgSize[1], imgSize[0]});
+
+//  torch::Tensor imgTensor = torch::zeros({3, img.size().rheight(), img.size().rwidth()});
+//  imgTensor.slice(0, 0, 1) = tmpTensor.slice(0, 0, img.size().rheight()*img.size().rwidth()*3, 3).reshape({1, img.size().rheight(), img.size().rwidth()});
+//  imgTensor.slice(0, 1, 2) = tmpTensor.slice(0, 1, img.size().rheight()*img.size().rwidth()*3, 3).reshape({1, img.size().rheight(), img.size().rwidth()});
+//  imgTensor.slice(0, 2, 3) = tmpTensor.slice(0, 2, img.size().rheight()*img.size().rwidth()*3, 3).reshape({1, img.size().rheight(), img.size().rwidth()});
+
+//  std::cout << imgTensor.slice(0, 0, 1) << std::endl;
+
+//  imgTensor = imgTensor.to(torch::kFloat32);
+//  imgTensor /= 255;
+
+  //Los datos se ve tal cual la imagen, fila x columna.
+//  qDebug() << bits[0];
+//  qDebug() << bits[1];
+//  qDebug() << bits[2];
+//  qDebug() << "------------------------";
+//  qDebug() << bits[nPixels-3];
+//  qDebug() << bits[nPixels-2];
+//  qDebug() << bits[nPixels-1];
+  return imgTensor;
+}
+
 #include "Utils.h"
+torch::Tensor vtkSlicerFeetSegmentationLogic::qImageToTensor(QImage &img)
+{
+  return Utils::qImageToTensor(img);
+}
+
 void vtkSlicerFeetSegmentationLogic::test()
 {
   FeetSegmentation torchModel = FeetSegmentation();
   std::vector<QImage> results = torchModel.predict("/home/abian/Data/Tools/Slicer/Modules/DiabeticFootExtension/FeetSegmentation/Testing/Dataset/visible/");
 
   results[0].save("itsTheFinalTest.png");
+}
+
+void vtkSlicerFeetSegmentationLogic::torchVTKTest(vtkMRMLVectorVolumeNode *node)
+{
+  FeetSegmentation torchModel = FeetSegmentation();
+  std::vector<QImage> results = torchModel.predict(node);
+
+  qDebug() << results.size();
+  results[0].save("itsTheFinalVTKTest.png");
 }
 
