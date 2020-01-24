@@ -39,8 +39,8 @@ vtkFeetSegmentationDepthDataset::vtkFeetSegmentationDepthDataset(vtkImageData *d
 
 vtkFeetSegmentationDepthDataset::~vtkFeetSegmentationDepthDataset()
 {
-  depthImg->Delete();
-  maskResult->Delete();
+//  depthImg->Delete();
+//  maskResult->Delete();
 }
 
 // ---------------------------------------------------------------
