@@ -18,6 +18,8 @@ set(${KIT}_SRCS
   ${MODULE_NAME}Dataset.cxx
   vtk${MODULE_NAME}Dataset.h
   vtk${MODULE_NAME}Dataset.cxx
+  vtk${MODULE_NAME}DepthDataset.h
+  vtk${MODULE_NAME}DepthDataset.cxx
   Utils.h
   Utils.cxx
 )

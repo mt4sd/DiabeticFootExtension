@@ -4,6 +4,7 @@
 #include "Utils.h"
 #include <torch/script.h>
 
+//Tmp
 #include <QDebug>
 
 FeetSegmentation::FeetSegmentation() :
@@ -60,8 +61,6 @@ std::vector<QImage> FeetSegmentation::predict(QString datasetDir, size_t batchSi
         }
     }
 
-    //
-
     return results;
 }
 
@@ -95,15 +94,13 @@ std::vector<vtkImageData *> FeetSegmentation::predict(vtkMRMLVectorVolumeNode *d
       batchResults.push_back(outputTensor.detach().to(torch::kCPU));
   }
 
-  qDebug() << "Tengo los tensores resultantes...";
   for (std::vector<torch::Tensor>::iterator batchIt = batchResults.begin();
        batchIt != batchResults.end();
        ++batchIt)
   {
-      for (size_t imgIdx = 0; imgIdx < (*batchIt).size(0); ++imgIdx){
+      for (int imgIdx = 0; imgIdx < (*batchIt).size(0); ++imgIdx){
           torch::Tensor img = (*batchIt)[imgIdx];
           img = Utils::binarize(img, 0.75);
-          qDebug() << "Voy a proceder a convertir la imagen...";
           results.push_back(Utils::tensorToVtkImage(img));
       }
   }

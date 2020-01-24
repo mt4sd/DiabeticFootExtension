@@ -37,13 +37,6 @@
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="vtkToTensorButton">
-     <property name="text">
-      <string>vtkToTensor</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QPushButton" name="pclTestButton">
      <property name="text">
       <string>PCL Test</string>

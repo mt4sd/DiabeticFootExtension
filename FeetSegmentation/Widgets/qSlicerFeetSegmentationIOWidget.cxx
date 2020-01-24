@@ -105,7 +105,6 @@ void qSlicerFeetSegmentationIOWidget::updateMRMLScene(vtkMRMLScene *mrmlScene)
 
 void qSlicerFeetSegmentationIOWidget::inputChanged()
 {
-  qDebug() << "||| qSlicerFeetSegmentationIOWidget::inputChanged() ||||";
   emit currentInputChanged();
 };
 

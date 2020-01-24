@@ -24,22 +24,28 @@
 #ifndef __vtkSlicerFeetSegmentationLogic_h
 #define __vtkSlicerFeetSegmentationLogic_h
 
-// To remove
-#include <QDebug>
-#include <QImage>
-
 // Slicer includes
 #include "vtkSlicerModuleLogic.h"
 
 // MRML includes
 #include "vtkMRMLVectorVolumeNode.h"
 
+// Qt Includes
+#include <QDebug>
+#include <QImage> // Temporal!
+
 // STD includes
 #include <cstdlib>
+
+// PCL Includes
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
+#include <pcl/PointIndices.h>
 
 #include <Torch>
 #include "vtkSlicerFeetSegmentationModuleLogicExport.h"
 #include "FeetSegmentation.h"
+#include "vtkFeetSegmentationDepthDataset.h"
 
 
 /// \ingroup Slicer_QtModules_ExtensionTemplate
@@ -53,11 +59,33 @@ public:
   void PrintSelf(ostream& os, vtkIndent indent);
 
   /**
+   * @brief feetSegmentation, automatic feet segmentation using the algorithm...
+   * @param rgbInputNode
+   * @param depthInputNode
+   * @param outputNode
+   */
+  void feetSegmentation(vtkMRMLVectorVolumeNode *rgbInputNode, vtkMRMLScalarVolumeNode *depthInputNode,
+      vtkMRMLScalarVolumeNode *outputNode);
+
+  /**
    * @brief torchSegmentation
    * @param input
    */
-  //void torchSegmentation(vtkMRMLVectorVolumeNode *input);
-  torch::Tensor torchSegmentation(vtkMRMLVectorVolumeNode *input);
+  std::vector<vtkImageData *> torchSegmentation(vtkMRMLVectorVolumeNode *input);
+
+  /**
+   * @brief pointCloudFilter
+   * @param pointCloud
+   */
+  pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudFilter(vtkFeetSegmentationDepthDataset *pointCloud);
+
+  /**
+   * @brief planeModelSegmentation
+   * @param pointCloud
+   * @return inlier indices
+   */
+  pcl::PointIndices::Ptr planeModelSegmentation(
+      pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud);
 
   /**
    * @brief tensorBinarize, binarize a tensor input by thresholding
@@ -67,13 +95,27 @@ public:
    */
   torch::Tensor tensorBinarize(torch::Tensor tensor, double threshold);
 
-  // Tmp
+  /**
+   * @brief vtkImageToTensor
+   * @param data
+   * @return
+   */
+  torch::Tensor vtkImageToTensor(vtkImageData *data);
+
+  /**
+   * @brief qImageToTensor
+   * @param img
+   * @return
+   */
   torch::Tensor qImageToTensor(QImage &img);
+
+  // To remove
   void test();
 
+  //To remove
   void torchVTKTest(vtkMRMLVectorVolumeNode *node, vtkMRMLScalarVolumeNode *outputNode);
-
-  void pointCloudTest(vtkMRMLScalarVolumeNode *depthNode);
+  //To remove
+  void pointCloudTest(vtkMRMLScalarVolumeNode *maskNode, vtkMRMLScalarVolumeNode * depthNode);
 
 protected:
   vtkSlicerFeetSegmentationLogic();
@@ -86,11 +128,6 @@ protected:
   virtual void OnMRMLSceneNodeAdded(vtkMRMLNode* node);
   virtual void OnMRMLSceneNodeRemoved(vtkMRMLNode* node);
 private:
-  /**
-   * @brief vtkImageToTensor
-   * @param data
-   */
-  torch::Tensor vtkImageToTensor(vtkImageData *data);
 
   vtkSlicerFeetSegmentationLogic(const vtkSlicerFeetSegmentationLogic&); // Not implemented
   void operator=(const vtkSlicerFeetSegmentationLogic&); // Not implemented

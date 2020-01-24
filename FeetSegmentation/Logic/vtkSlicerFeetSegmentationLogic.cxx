@@ -17,7 +17,9 @@
 
 // FeetSegmentation Logic includes
 #include "vtkSlicerFeetSegmentationLogic.h"
+#include "vtkFeetSegmentationDepthDataset.h"
 #include "FeetSegmentation.h"
+#include "Utils.h"
 
 // MRML includes
 #include <vtkMRMLScene.h>
@@ -30,6 +32,15 @@
 
 // STD includes
 #include <cassert>
+
+// PCL Includes
+#include <pcl/filters/statistical_outlier_removal.h>
+#include <pcl/io/pcd_io.h>
+#include <pcl/ModelCoefficients.h>
+#include <pcl/sample_consensus/method_types.h>
+#include <pcl/sample_consensus/model_types.h>
+#include <pcl/segmentation/sac_segmentation.h>
+#include <pcl/filters/extract_indices.h>
 
 #include <QDebug>
 
@@ -86,17 +97,82 @@ void vtkSlicerFeetSegmentationLogic
 {
 }
 
-torch::Tensor vtkSlicerFeetSegmentationLogic::torchSegmentation(vtkMRMLVectorVolumeNode *input)
+void vtkSlicerFeetSegmentationLogic::feetSegmentation(
+    vtkMRMLVectorVolumeNode *rgbInputNode, vtkMRMLScalarVolumeNode *depthInputNode,
+    vtkMRMLScalarVolumeNode *outputNode)
 {
+  std::vector<vtkImageData *> results = torchSegmentation(rgbInputNode);
+
+  vtkFeetSegmentationDepthDataset pointCloud(depthInputNode->GetImageData(), QSize(512,512));
+  pointCloud.applyMask(results[0]);
+
+  pcl::PointCloud<pcl::PointXYZ>::Ptr cloudFiltered = pointCloudFilter(&pointCloud);
+  pcl::PointIndices::Ptr indices = planeModelSegmentation(cloudFiltered);
+  pointCloud.setInliers(indices);
+  vtkImageData * result = pointCloud.getMaskResult();
+
+  outputNode->SetAndObserveImageData(result);
+  outputNode->SetIJKToRASDirections(-1,0,0,0,-1,0,0,0,1);
+  outputNode->SetOrigin(rgbInputNode->GetOrigin());
+  outputNode->SetSpacing(rgbInputNode->GetSpacing());
+}
+
+std::vector<vtkImageData *> vtkSlicerFeetSegmentationLogic::torchSegmentation(vtkMRMLVectorVolumeNode *input)
+{
+  FeetSegmentation torchModel = FeetSegmentation();
   if (input == nullptr)
-    return torch::zeros({1});
+    return std::vector<vtkImageData *>();
 
-  vtkImageData *rgbImg = input->GetImageData();
-  torch::Tensor tensor = vtkImageToTensor(rgbImg);
+  return torchModel.predict(input);
+}
 
-  // Meh
-  return tensor;
-  //TODO
+pcl::PointCloud<pcl::PointXYZ>::Ptr vtkSlicerFeetSegmentationLogic::pointCloudFilter(vtkFeetSegmentationDepthDataset *pointCloud)
+{
+  pcl::PointCloud<pcl::PointXYZ>::Ptr cloudFiltered (new pcl::PointCloud<pcl::PointXYZ>);
+
+  pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;
+  sor.setInputCloud (pointCloud->getPointCloud());
+  sor.setMeanK (50);
+  sor.setStddevMulThresh (1.0);
+  sor.filter (*cloudFiltered);
+
+  // Just testing
+  pcl::io::savePCDFile("maskedPCDOutlierRemoved.pcd", *cloudFiltered);
+
+  return cloudFiltered;
+}
+
+pcl::PointIndices::Ptr vtkSlicerFeetSegmentationLogic::planeModelSegmentation(
+    pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud)
+{
+  pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
+  pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
+  // Create the segmentation object
+  pcl::SACSegmentation<pcl::PointXYZ> seg;
+  // Optional
+  seg.setOptimizeCoefficients (true);
+  // Mandatory
+  seg.setModelType (pcl::SACMODEL_PLANE);
+  seg.setMethodType (pcl::SAC_RANSAC);
+  seg.setDistanceThreshold (100);
+  seg.setMaxIterations (1000);
+
+  seg.setInputCloud (pointCloud);
+  seg.segment (*inliers, *coefficients);
+
+  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_p (new pcl::PointCloud<pcl::PointXYZ>);
+
+  // Create the filtering object
+  pcl::ExtractIndices<pcl::PointXYZ> extract;
+  // Extract the inliers
+  extract.setInputCloud (pointCloud);
+  extract.setIndices (inliers);
+  extract.setNegative (false);
+  extract.filter (*cloud_p);
+
+  pcl::io::savePCDFile("resutPCD.pcd", *cloud_p);
+
+  return inliers;
 }
 
 torch::Tensor vtkSlicerFeetSegmentationLogic::tensorBinarize(torch::Tensor tensor, double threshold)
@@ -134,18 +210,9 @@ torch::Tensor vtkSlicerFeetSegmentationLogic::vtkImageToTensor(vtkImageData *dat
 //  imgTensor = imgTensor.to(torch::kFloat32);
 //  imgTensor /= 255;
 
-  //Los datos se ve tal cual la imagen, fila x columna.
-//  qDebug() << bits[0];
-//  qDebug() << bits[1];
-//  qDebug() << bits[2];
-//  qDebug() << "------------------------";
-//  qDebug() << bits[nPixels-3];
-//  qDebug() << bits[nPixels-2];
-//  qDebug() << bits[nPixels-1];
   return imgTensor;
 }
 
-#include "Utils.h"
 torch::Tensor vtkSlicerFeetSegmentationLogic::qImageToTensor(QImage &img)
 {
   return Utils::qImageToTensor(img);
@@ -186,8 +253,9 @@ void vtkSlicerFeetSegmentationLogic::torchVTKTest(vtkMRMLVectorVolumeNode *input
   outputNode->SetSpacing(inputNode->GetSpacing());
 }
 
-#include <pcl/point_cloud.h>
-void vtkSlicerFeetSegmentationLogic::pointCloudTest(vtkMRMLScalarVolumeNode *depthNode)
+void vtkSlicerFeetSegmentationLogic::pointCloudTest(vtkMRMLScalarVolumeNode *maskNode, vtkMRMLScalarVolumeNode * depthNode)
 {
-  Utils::vtkImageToPointCloud(depthNode->GetImageData());
+  vtkFeetSegmentationDepthDataset pointCloud(depthNode->GetImageData(), QSize(512,512));
+  pointCloud.applyMask(maskNode->GetImageData());
+//  Utils::vtkImageToPointCloud(depthNode->GetImageData());
 }

@@ -79,16 +79,12 @@ void qSlicerFeetSegmentationModuleWidget::setup()
 
   QObject::connect(
       d->IOWidget, &qSlicerFeetSegmentationIOWidget::currentInputChanged,
-      [=]() { qDebug() << "La prueba!"; emit currentInputChanged(); }
+      [=]() { emit currentInputChanged(); }
   );
 
   /* Test buttons */
   QObject::connect(
     d->applyButton, SIGNAL(clicked()), this, SLOT(elTest())
-  );
-
-  QObject::connect(
-    d->vtkToTensorButton, SIGNAL(clicked()), this, SLOT(vtkToTensorTest())
   );
 
   QObject::connect(
@@ -133,30 +129,25 @@ void qSlicerFeetSegmentationModuleWidget::elTest()
 {
   Q_D(qSlicerFeetSegmentationModuleWidget);
 
-  vtkMRMLVectorVolumeNode *dataset = getRGBInputNode();
-  if (dataset != nullptr)
-    d->logic()->torchVTKTest(dataset, getOutputNode());
+//  vtkMRMLVectorVolumeNode *dataset = getRGBInputNode();
+//  if (dataset != nullptr)
+//    d->logic()->torchVTKTest(dataset, getOutputNode());
+  vtkMRMLVectorVolumeNode *rgbNode = getRGBInputNode();
+  vtkMRMLScalarVolumeNode *depthNode = getDepthInputNode();
+  vtkMRMLScalarVolumeNode *outputNode = getOutputNode();
+
+  d->logic()->feetSegmentation(rgbNode, depthNode, outputNode);
 }
 
 //-----------------------------------------------------------------------------
-#include <QImage>
-// ¡¡¡ To remove !!!!
-void qSlicerFeetSegmentationModuleWidget::vtkToTensorTest()
-{
-  Q_D(qSlicerFeetSegmentationModuleWidget);
-  torch::Tensor vtkTensor = d->logic()->torchSegmentation(getRGBInputNode());
-  QImage asd("/home/abian/Data/Tools/Slicer/Modules/DiabeticFootExtension/FeetSegmentation/Testing/Dataset/visible/G01_SID0001_190227_105842_918_ColorRGB.png");
-  torch::Tensor qTensor = d->logic()->qImageToTensor(asd);
-
-  torch::Tensor result = vtkTensor - qTensor;
-
-  std::cout << result.slice(0, 0, 3) << std::endl;
-}
-
 void qSlicerFeetSegmentationModuleWidget::pclTest()
 {
   Q_D(qSlicerFeetSegmentationModuleWidget);
   vtkMRMLScalarVolumeNode *depthNode = getDepthInputNode();
-  qDebug() << "Allé voy!...";
-  d->logic()->pointCloudTest(depthNode);
+  vtkMRMLScalarVolumeNode *maskNode = getOutputNode();
+
+  if (depthNode == nullptr || maskNode == nullptr)
+    return;
+
+  d->logic()->pointCloudTest(maskNode, depthNode);
 }

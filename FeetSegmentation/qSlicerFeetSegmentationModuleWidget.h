@@ -72,7 +72,6 @@ public:
 public slots:
   /* Slots for testing */
   void elTest();
-  void vtkToTensorTest();
   void pclTest();
 
 signals:
