@@ -85,6 +85,10 @@ void qSlicerFeetSegmentationModuleWidget::setup()
   QObject::connect(
     d->applyButton, SIGNAL(clicked()), this, SLOT(elTest())
   );
+
+  QObject::connect(
+    d->testButton, SIGNAL(clicked()), this, SLOT(pclTest())
+  );
 }
 
 //-----------------------------------------------------------------------------
@@ -139,10 +143,13 @@ void qSlicerFeetSegmentationModuleWidget::pclTest()
 {
   Q_D(qSlicerFeetSegmentationModuleWidget);
   vtkMRMLScalarVolumeNode *depthNode = getDepthInputNode();
-  vtkMRMLScalarVolumeNode *maskNode = getOutputNode();
+//  vtkMRMLScalarVolumeNode *maskNode = getOutputNode();
 
-  if (depthNode == nullptr || maskNode == nullptr)
-    return;
+//  if (depthNode == nullptr || maskNode == nullptr)
+//    return;
 
-  d->logic()->pointCloudTest(maskNode, depthNode);
+  if (depthNode == nullptr)
+      return;
+//  d->logic()->pointCloudTest(maskNode, depthNode);
+  d->logic()->testNewVtkImageToPointCloud(depthNode);
 }

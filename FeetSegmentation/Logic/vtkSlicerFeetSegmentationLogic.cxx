@@ -259,3 +259,8 @@ void vtkSlicerFeetSegmentationLogic::pointCloudTest(vtkMRMLScalarVolumeNode *mas
   pointCloud.applyMask(maskNode->GetImageData());
 //  Utils::vtkImageToPointCloud(depthNode->GetImageData());
 }
+
+void vtkSlicerFeetSegmentationLogic::testNewVtkImageToPointCloud(vtkMRMLScalarVolumeNode * depthNode)
+{
+    Utils::vtkImageToPointCloud2(depthNode->GetImageData());
+}

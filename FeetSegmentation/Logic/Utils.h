@@ -14,6 +14,8 @@
 
 class Utils
 {
+    typedef pcl::PointXYZ Point;
+    typedef pcl::PointCloud<Point> PointCloud;
 public:
   /**
    * @brief qImageToTensor
@@ -66,6 +68,13 @@ public:
    * @return
    */
   static pcl::PointCloud<pcl::PointXYZ> vtkImageToPointCloud(vtkImageData *img);
+
+  /**
+   * @brief vtkImateToPointCloud2
+   * @param img
+   * @return
+   */
+  static PointCloud::Ptr vtkImageToPointCloud2(vtkImageData *img);
 
   /**
    * @brief pointCloudToVtkImage

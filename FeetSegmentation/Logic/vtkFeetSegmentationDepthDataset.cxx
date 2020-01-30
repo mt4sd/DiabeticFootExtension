@@ -97,8 +97,6 @@ void vtkFeetSegmentationDepthDataset::setInliers(pcl::PointIndices::Ptr indices)
   extract.setNegative (false);
   extract.filter (*cloud_p);
 
-  qDebug() << "Voy a ver que son los indices: " << indices->indices[0];
-
   //invert point cloud
   pcl::transformPointCloud(*cloud_p, *cloud_p, img2pc.inverse());
 

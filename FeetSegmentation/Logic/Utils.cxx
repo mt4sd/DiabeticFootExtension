@@ -3,6 +3,11 @@
 // VTK Includes
 #include <vtkSmartPointer.h>
 
+// Qt Includes
+#include <QtConcurrent/QtConcurrentMap>
+#include <QFuture>
+#include <QVector>
+
 // Temporal Includes
 #include <QDebug>
 
@@ -103,13 +108,11 @@ torch::Tensor Utils::binarize(torch::Tensor &tensor, double threshold)
 // To remove
 pcl::PointCloud<pcl::PointXYZ> Utils::vtkImageToPointCloud(vtkImageData *depthImg)
 {
-  qDebug() << "Aqué estoy!...";
   uint16_t *data = reinterpret_cast<uint16_t *>(depthImg->GetScalarPointer());
   int *dimensions = depthImg->GetDimensions();
 
   pcl::PointCloud<pcl::PointXYZ> pointCloud;
 
-  qDebug() << "Voy a entrar a los bucles, deseame suerte!...";
   for (int x = 0; x < dimensions[0]; ++x)
   {
     for (int y=0; y < dimensions[1]; ++y)
@@ -122,6 +125,40 @@ pcl::PointCloud<pcl::PointXYZ> Utils::vtkImageToPointCloud(vtkImageData *depthIm
   //tmp
   pcl::io::savePCDFile("test.pcd", pointCloud);
   return pointCloud;
+}
+
+//----------------------------------------------------------
+pcl::PointCloud<pcl::PointXYZ>::Ptr Utils::vtkImageToPointCloud2(vtkImageData *depthImg)
+{
+
+    int *dimensions = depthImg->GetDimensions();
+    uint16_t *depthData = reinterpret_cast<uint16_t *>(depthImg->GetScalarPointer());
+
+    PointCloud::Ptr pointCloud(new PointCloud(dimensions[0], dimensions[1]));
+
+    size_t currentRow = 0;
+
+    // Lambda function (generatePoint)
+    std::function<Point(const size_t &wIdx)> generatePoint =
+            [ &depthData, &dimensions, &currentRow ](const size_t &wIdx)
+    {
+        return Point(wIdx, currentRow, depthData[currentRow * dimensions[0] + wIdx]);
+    };
+
+
+    std::vector<int> pixelsIdx_w(dimensions[0]);
+    std::iota(pixelsIdx_w.begin(), pixelsIdx_w.end(), 0);
+    for (; currentRow < static_cast<size_t>(dimensions[1]); ++currentRow)
+    {
+        QFuture<Point> mapper = QtConcurrent::mapped(pixelsIdx_w.begin(), pixelsIdx_w.end(), generatePoint);
+        QVector<Point> results = mapper.results().toVector();
+
+        Point *pcData = &(pointCloud->points.data()[currentRow*dimensions[0]]);
+        std::copy(results.begin(), results.end(), pcData);
+    }
+
+    pcl::io::savePCDFile("test.pcd", *pointCloud);
+    return pointCloud;
 }
 
 //----------------------------------------------------------
