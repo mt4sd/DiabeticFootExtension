@@ -130,39 +130,57 @@ pcl::PointCloud<pcl::PointXYZ> Utils::vtkImageToPointCloud(vtkImageData *depthIm
 //----------------------------------------------------------
 pcl::PointCloud<pcl::PointXYZ>::Ptr Utils::vtkImageToPointCloud2(vtkImageData *depthImg)
 {
+  int *dimensions = depthImg->GetDimensions();
+  uint16_t *depthData = reinterpret_cast<uint16_t *>(depthImg->GetScalarPointer());
 
-    int *dimensions = depthImg->GetDimensions();
-    uint16_t *depthData = reinterpret_cast<uint16_t *>(depthImg->GetScalarPointer());
+  PointCloud::Ptr pointCloud(new PointCloud(dimensions[0], dimensions[1]));
 
-    PointCloud::Ptr pointCloud(new PointCloud(dimensions[0], dimensions[1]));
+  size_t currentRow = 0;
 
-    size_t currentRow = 0;
+  // Lambda function (generatePoint)
+  std::function<Point(const size_t &wIdx)> generatePoint =
+        [ &depthData, &dimensions, &currentRow ](const size_t &wIdx)
+  {
+    return Point(wIdx, currentRow, depthData[currentRow * dimensions[0] + wIdx]);
+  };
 
-    // Lambda function (generatePoint)
-    std::function<Point(const size_t &wIdx)> generatePoint =
-            [ &depthData, &dimensions, &currentRow ](const size_t &wIdx)
-    {
-        return Point(wIdx, currentRow, depthData[currentRow * dimensions[0] + wIdx]);
-    };
+  std::vector<int> pixelsIdx_w(dimensions[0]);
+  std::iota(pixelsIdx_w.begin(), pixelsIdx_w.end(), 0);
+  for (; currentRow < static_cast<size_t>(dimensions[1]); ++currentRow)
+  {
+    QFuture<Point> mapper = QtConcurrent::mapped(pixelsIdx_w.begin(), pixelsIdx_w.end(), generatePoint);
+    QVector<Point> results = mapper.results().toVector();
 
+    Point *pcData = &(pointCloud->points.data()[currentRow*dimensions[0]]);
+    std::copy(results.begin(), results.end(), pcData);
+  }
 
-    std::vector<int> pixelsIdx_w(dimensions[0]);
-    std::iota(pixelsIdx_w.begin(), pixelsIdx_w.end(), 0);
-    for (; currentRow < static_cast<size_t>(dimensions[1]); ++currentRow)
-    {
-        QFuture<Point> mapper = QtConcurrent::mapped(pixelsIdx_w.begin(), pixelsIdx_w.end(), generatePoint);
-        QVector<Point> results = mapper.results().toVector();
-
-        Point *pcData = &(pointCloud->points.data()[currentRow*dimensions[0]]);
-        std::copy(results.begin(), results.end(), pcData);
-    }
-
-    pcl::io::savePCDFile("test.pcd", *pointCloud);
-    return pointCloud;
+  pcl::io::savePCDFile("test.pcd", *pointCloud);
+  return pointCloud;
 }
 
 //----------------------------------------------------------
-vtkImageData * Utils::pointCloudToVtkImage(pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud)
+vtkImageData * Utils::pointCloudToVtkImage(PointCloud::Ptr pointCloud)
 {
+  vtkImageData *depthImg = vtkImageData::New();
+  depthImg->SetDimensions(pointCloud->width, pointCloud->height, 1);
+  depthImg->SetSpacing(1.0, 1.0, 1.0);
+  depthImg->SetOrigin(.0, .0, .0);
+  depthImg->AllocateScalars(VTK_UNSIGNED_SHORT, 1);
 
+  size_t nPixels = depthImg->GetDimensions()[0]*depthImg->GetDimensions()[1];
+  size_t stride = depthImg->GetDimensions()[0];
+  uint16_t data[nPixels];
+
+  for(PointCloud::iterator it = pointCloud->begin(); it!= pointCloud->end(); ++it)
+  {
+    Point point = *it;
+    int x = point._PointXYZ::x;
+    int y = point._PointXYZ::y;
+    data[y * stride + x] = point._PointXYZ::z;
+  }
+
+  std::memcpy(depthImg->GetScalarPointer(), data, sizeof(uint16_t) * nPixels);
+
+  return depthImg;
 }

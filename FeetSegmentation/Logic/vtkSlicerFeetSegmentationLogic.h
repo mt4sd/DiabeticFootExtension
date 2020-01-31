@@ -112,7 +112,7 @@ public:
   // To remove
   void test();
   //To remove
-  void testNewVtkImageToPointCloud(vtkMRMLScalarVolumeNode * depthNode);
+  void testNewVtkImageToPointCloud(vtkMRMLScalarVolumeNode * depthNode, vtkMRMLScalarVolumeNode * outputNode);
   //To remove
   void torchVTKTest(vtkMRMLVectorVolumeNode *node, vtkMRMLScalarVolumeNode *outputNode);
   //To remove

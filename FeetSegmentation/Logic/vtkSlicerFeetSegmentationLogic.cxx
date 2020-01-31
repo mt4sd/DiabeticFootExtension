@@ -260,7 +260,13 @@ void vtkSlicerFeetSegmentationLogic::pointCloudTest(vtkMRMLScalarVolumeNode *mas
 //  Utils::vtkImageToPointCloud(depthNode->GetImageData());
 }
 
-void vtkSlicerFeetSegmentationLogic::testNewVtkImageToPointCloud(vtkMRMLScalarVolumeNode * depthNode)
+void vtkSlicerFeetSegmentationLogic::testNewVtkImageToPointCloud(vtkMRMLScalarVolumeNode * depthNode, vtkMRMLScalarVolumeNode * outputNode)
 {
-    Utils::vtkImageToPointCloud2(depthNode->GetImageData());
+    pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud = Utils::vtkImageToPointCloud2(depthNode->GetImageData());
+    vtkImageData * depthImage = Utils::pointCloudToVtkImage(pointCloud);
+
+    outputNode->SetIJKToRASDirections(-1,0,0,0,-1,0,0,0,1);
+    outputNode->SetOrigin(depthNode->GetOrigin());
+    outputNode->SetSpacing(depthNode->GetSpacing());
+    outputNode->SetAndObserveImageData(depthImage);
 }

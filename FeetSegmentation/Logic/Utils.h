@@ -81,7 +81,7 @@ public:
    * @param pointCloud
    * @return
    */
-  static vtkImageData * pointCloudToVtkImage(pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud);
+  static vtkImageData * pointCloudToVtkImage(PointCloud::Ptr pointCloud);
 };
 
 #endif // UTILS_H
