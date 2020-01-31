@@ -77,7 +77,8 @@ public:
   static PointCloud::Ptr vtkImageToPointCloud2(vtkImageData *img);
 
   /**
-   * @brief pointCloudToVtkImage
+   * @brief pointCloudToVtkImage, remember to clean memory using the
+   *    vtkImageData::Delete() when the result is unnecessary.
    * @param pointCloud
    * @return
    */

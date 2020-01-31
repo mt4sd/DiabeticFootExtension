@@ -162,7 +162,7 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr Utils::vtkImageToPointCloud2(vtkImageData *d
 //----------------------------------------------------------
 vtkImageData * Utils::pointCloudToVtkImage(PointCloud::Ptr pointCloud)
 {
-  vtkImageData *depthImg = vtkImageData::New();
+  vtkImageData * depthImg = vtkImageData::New();
   depthImg->SetDimensions(pointCloud->width, pointCloud->height, 1);
   depthImg->SetSpacing(1.0, 1.0, 1.0);
   depthImg->SetOrigin(.0, .0, .0);
@@ -181,6 +181,5 @@ vtkImageData * Utils::pointCloudToVtkImage(PointCloud::Ptr pointCloud)
   }
 
   std::memcpy(depthImg->GetScalarPointer(), data, sizeof(uint16_t) * nPixels);
-
   return depthImg;
 }

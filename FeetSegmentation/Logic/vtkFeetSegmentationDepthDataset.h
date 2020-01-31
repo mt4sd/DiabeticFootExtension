@@ -17,6 +17,8 @@
 
 class vtkFeetSegmentationDepthDataset
 {
+  typedef pcl::PointXYZ Point;
+  typedef pcl::PointCloud<Point> PointCloud;
 public:
   vtkFeetSegmentationDepthDataset(vtkImageData *depthImg, QSize resize=QSize(0,0));
   ~vtkFeetSegmentationDepthDataset();
@@ -31,7 +33,7 @@ public:
    * @brief getPointCloud
    * @return
    */
-  pcl::PointCloud<pcl::PointXYZ>::Ptr getPointCloud() const { return pc; }
+  pcl::PointCloud<pcl::PointXYZ>::Ptr getPointCloud() const { return cloud; }
 
   /**
    * @brief getDepthImage
@@ -52,8 +54,8 @@ public:
   void setInliers(pcl::PointIndices::Ptr indices);
 
 private:
-  pcl::PointCloud<pcl::PointXYZ>::Ptr pc;
   vtkImageData *depthImg;
+  PointCloud::Ptr cloud;
 
   vtkImageData *maskResult;
 
@@ -67,6 +69,14 @@ private:
    * @param img: vtkImagaData in format Grayscale 16 bit.
    */
   void generatePointCloud(vtkImageData *img);
+
+  /**
+   * @brief pointCloudToVtkImageData: Generate a grayscale 16 bit image from a point cloud.
+   *    In this image, the grayscale pixel value corresponds to the depth value
+   *    (Z component in the point cloud).
+   * @param pointCloud: Point Cloud with point in XYZ format.
+   */
+  void pointCloudToVtkImageData(PointCloud::Ptr pointCloud);
 };
 
 #endif // VTKFEETSEGMENTATIONDEPTHDATASET_H

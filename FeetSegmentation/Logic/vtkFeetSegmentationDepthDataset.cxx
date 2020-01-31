@@ -13,8 +13,8 @@
 #include <QDebug>
 
 vtkFeetSegmentationDepthDataset::vtkFeetSegmentationDepthDataset(vtkImageData *depthImg, QSize resize)
-  : pc((new pcl::PointCloud<pcl::PointXYZ>())), depthImg(depthImg), maskResult(vtkImageData::New()),
-    img2pc(Eigen::Affine3f::Identity())
+  : depthImg(vtkImageData::New()), cloud((new PointCloud())),
+    maskResult(vtkImageData::New()), img2pc(Eigen::Affine3f::Identity())
 {
 
   if (resize != QSize(0,0))
@@ -26,9 +26,14 @@ vtkFeetSegmentationDepthDataset::vtkFeetSegmentationDepthDataset(vtkImageData *d
     vtkResize->SetOutputDimensions(resize.width(), resize.height(), 1);
     vtkResize->Update();
 
-    this->depthImg = vtkImageData::New();
-    this->depthImg->ShallowCopy(vtkResize->GetOutput());
+    this->depthImg->DeepCopy(vtkResize->GetOutput());
+  } else {
+    this->depthImg->DeepCopy(depthImg);
   }
+
+  cloud->width = this->depthImg->GetDimensions()[0];
+  cloud->height = this->depthImg->GetDimensions()[1];
+  cloud->resize(cloud->width * cloud->height);
 
   //Define Image to point cloud Transform
   img2pc.scale(Eigen::Vector3f(1., 1., 1));
@@ -39,8 +44,8 @@ vtkFeetSegmentationDepthDataset::vtkFeetSegmentationDepthDataset(vtkImageData *d
 
 vtkFeetSegmentationDepthDataset::~vtkFeetSegmentationDepthDataset()
 {
-//  depthImg->Delete();
-//  maskResult->Delete();
+  depthImg->Delete();
+  maskResult->Delete();
 }
 
 // ---------------------------------------------------------------
@@ -59,10 +64,10 @@ void vtkFeetSegmentationDepthDataset::applyMask(vtkImageData *mask)
 // ---------------------------------------------------------------
 void vtkFeetSegmentationDepthDataset::generatePointCloud(vtkImageData *img)
 {
-  if (pc->size() != 0)
-    pcl::io::savePCDFile("preMaskedPCD.pcd", *pc);
+  if (cloud->size() != 0)
+    pcl::io::savePCDFile("preMaskedPCD.pcd", *cloud);
 
-  pc->clear();
+  cloud->clear();
 
   uint16_t *data = reinterpret_cast<uint16_t *>(img->GetScalarPointer());
   int *dimensions = img->GetDimensions();
@@ -74,14 +79,38 @@ void vtkFeetSegmentationDepthDataset::generatePointCloud(vtkImageData *img)
     {
       uint16_t depthPixel = data[ y * dimensions[0] + x];
       if (depthPixel != 0)
-        pc->push_back(pcl::PointXYZ(x, y, depthPixel));
+        cloud->push_back(pcl::PointXYZ(x, y, depthPixel));
     }
   }
 
   pcl::PointCloud<pcl::PointXYZ>::Ptr transformed_cloud (new pcl::PointCloud<pcl::PointXYZ> ());
-  pcl::transformPointCloud(*pc, *pc, img2pc);
+  pcl::transformPointCloud(*cloud, *cloud, img2pc);
 
-  pcl::io::savePCDFile("maskedPCD.pcd", *pc);
+  pcl::io::savePCDFile("maskedPCD.pcd", *cloud);
+}
+
+// ---------------------------------------------------------------
+void vtkFeetSegmentationDepthDataset::pointCloudToVtkImageData(PointCloud::Ptr pointCloud)
+{
+  vtkImageData * depthImg = vtkImageData::New();
+  depthImg->SetDimensions(pointCloud->width, pointCloud->height, 1);
+  depthImg->SetSpacing(1.0, 1.0, 1.0);
+  depthImg->SetOrigin(.0, .0, .0);
+  depthImg->AllocateScalars(VTK_UNSIGNED_SHORT, 1);
+
+  size_t nPixels = depthImg->GetDimensions()[0]*depthImg->GetDimensions()[1];
+  size_t stride = depthImg->GetDimensions()[0];
+  uint16_t data[nPixels];
+
+  for(PointCloud::iterator it = pointCloud->begin(); it!= pointCloud->end(); ++it)
+  {
+    Point point = *it;
+    int x = point._PointXYZ::x;
+    int y = point._PointXYZ::y;
+    data[y * stride + x] = point._PointXYZ::z;
+  }
+
+  std::memcpy(depthImg->GetScalarPointer(), data, sizeof(uint16_t) * nPixels);
 }
 
 // ---------------------------------------------------------------
@@ -92,7 +121,7 @@ void vtkFeetSegmentationDepthDataset::setInliers(pcl::PointIndices::Ptr indices)
   // Create the filtering object
   pcl::ExtractIndices<pcl::PointXYZ> extract;
   // Extract the inliers
-  extract.setInputCloud (pc);
+  extract.setInputCloud (cloud);
   extract.setIndices (indices);
   extract.setNegative (false);
   extract.filter (*cloud_p);
@@ -123,3 +152,4 @@ void vtkFeetSegmentationDepthDataset::setInliers(pcl::PointIndices::Ptr indices)
   std::memcpy(img->GetScalarPointer(), data, sizeof(uint8_t) * nPixel);
   maskResult->DeepCopy(img);
 }
+
