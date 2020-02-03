@@ -52,6 +52,8 @@
 class VTK_SLICER_FEETSEGMENTATION_MODULE_LOGIC_EXPORT vtkSlicerFeetSegmentationLogic :
   public vtkSlicerModuleLogic
 {
+  typedef pcl::PointXYZ Point;
+  typedef pcl::PointCloud<Point> PointCloud;
 public:
 
   static vtkSlicerFeetSegmentationLogic *New();
@@ -77,15 +79,22 @@ public:
    * @brief pointCloudFilter
    * @param pointCloud
    */
-  pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudFilter(vtkFeetSegmentationDepthDataset *pointCloud);
+  pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudStatisticalFilter(vtkFeetSegmentationDepthDataset *pointCloud);
+
+//  /**
+//   * @brief planeModelSegmentation
+//   * @param pointCloud
+//   * @return inlier indices
+//   */
+//  pcl::PointIndices::Ptr planeModelSegmentation(
+//      pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud);
 
   /**
-   * @brief planeModelSegmentation
-   * @param pointCloud
-   * @return inlier indices
-   */
-  pcl::PointIndices::Ptr planeModelSegmentation(
-      pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud);
+  * @brief planeModelSegmentation
+  * @param pointCloud
+  * @return
+  */
+ PointCloud::Ptr planeModelSegmentation(PointCloud::Ptr pointCloud);
 
   /**
    * @brief tensorBinarize, binarize a tensor input by thresholding

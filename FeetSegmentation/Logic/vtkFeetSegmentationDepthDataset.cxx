@@ -6,8 +6,15 @@
 
 // PCL Includes
 #include <pcl/filters/extract_indices.h>
+#include <pcl/filters/passthrough.h>
 #include <pcl/common/transforms.h>
 #include <pcl/io/pcd_io.h>
+
+// Qt Includes
+#include <QtConcurrent/QtConcurrentMap>
+#include <QFuture>
+#include <QVector>
+
 
 //Tmp
 #include <QDebug>
@@ -51,6 +58,9 @@ vtkFeetSegmentationDepthDataset::~vtkFeetSegmentationDepthDataset()
 // ---------------------------------------------------------------
 void vtkFeetSegmentationDepthDataset::applyMask(vtkImageData *mask)
 {
+  // Tmp
+  pcl::io::savePCDFile("preMaskedPCD.pcd", *cloud);
+
   vtkSmartPointer<vtkImageMask> maskFilter =
       vtkSmartPointer<vtkImageMask>::New();
   maskFilter->SetInput1Data(depthImg);
@@ -59,34 +69,56 @@ void vtkFeetSegmentationDepthDataset::applyMask(vtkImageData *mask)
   depthImg->DeepCopy(maskFilter->GetOutput());
 
   generatePointCloud(depthImg);
+  pcl::transformPointCloud(*cloud, *cloud, img2pc.inverse());
+
+  // It is necessary to remove the points with Z value to 0 (Here?!)
+  pcl::PassThrough<Point> pass;
+  pass.setInputCloud(cloud);
+  pass.setFilterFieldName("z");
+  pass.setFilterLimits(0.0, 0.0);
+  pass.setNegative(true);
+  pass.filter(*cloud);
+
+  pcl::transformPointCloud(*cloud, *cloud, img2pc);
+
+  // Tmp
+  pcl::io::savePCDFile("maskedPCD.pcd", *cloud);
 }
 
 // ---------------------------------------------------------------
 void vtkFeetSegmentationDepthDataset::generatePointCloud(vtkImageData *img)
 {
-  if (cloud->size() != 0)
-    pcl::io::savePCDFile("preMaskedPCD.pcd", *cloud);
-
   cloud->clear();
 
-  uint16_t *data = reinterpret_cast<uint16_t *>(img->GetScalarPointer());
-  int *dimensions = img->GetDimensions();
+  cloud->width = img->GetDimensions()[0];
+  cloud->height = img->GetDimensions()[1];
+  cloud->resize(cloud->width * cloud->height);
 
-  pcl::PointCloud<pcl::PointXYZ> pointCloud;
-  for (int x = 0; x < dimensions[0]; ++x)
+
+  int *dimensions = img->GetDimensions();
+  uint16_t *depthData = reinterpret_cast<uint16_t *>(img->GetScalarPointer());
+
+  size_t currentRow = 0;
+
+  // Lambda function (generatePoint)
+  std::function<Point(const size_t &wIdx)> generatePoint =
+        [ &depthData, &dimensions, &currentRow ](const size_t &wIdx)
   {
-    for (int y=0; y < dimensions[1]; ++y)
-    {
-      uint16_t depthPixel = data[ y * dimensions[0] + x];
-      if (depthPixel != 0)
-        cloud->push_back(pcl::PointXYZ(x, y, depthPixel));
-    }
+    return Point(wIdx, currentRow, depthData[currentRow * dimensions[0] + wIdx]);
+  };
+
+  std::vector<int> pixelsIdx_w(dimensions[0]);
+  std::iota(pixelsIdx_w.begin(), pixelsIdx_w.end(), 0);
+  for (; currentRow < static_cast<size_t>(dimensions[1]); ++currentRow)
+  {
+    QFuture<Point> mapper = QtConcurrent::mapped(pixelsIdx_w.begin(), pixelsIdx_w.end(), generatePoint);
+    QVector<Point> results = mapper.results().toVector();
+
+    Point *pcData = &(cloud->points.data()[currentRow*dimensions[0]]);
+    std::copy(results.begin(), results.end(), pcData);
   }
 
-  pcl::PointCloud<pcl::PointXYZ>::Ptr transformed_cloud (new pcl::PointCloud<pcl::PointXYZ> ());
   pcl::transformPointCloud(*cloud, *cloud, img2pc);
-
-  pcl::io::savePCDFile("maskedPCD.pcd", *cloud);
 }
 
 // ---------------------------------------------------------------
@@ -116,15 +148,19 @@ void vtkFeetSegmentationDepthDataset::pointCloudToVtkImageData(PointCloud::Ptr p
 // ---------------------------------------------------------------
 void vtkFeetSegmentationDepthDataset::setInliers(pcl::PointIndices::Ptr indices)
 {
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_p (new pcl::PointCloud<pcl::PointXYZ>);
+
+  PointCloud::Ptr cloud_p (new PointCloud);
 
   // Create the filtering object
-  pcl::ExtractIndices<pcl::PointXYZ> extract;
+  pcl::ExtractIndices<Point> extract;
   // Extract the inliers
   extract.setInputCloud (cloud);
   extract.setIndices (indices);
   extract.setNegative (false);
   extract.filter (*cloud_p);
+
+
+  pcl::io::savePCDFileASCII("resultPCDASCII.pcd", *cloud_p);
 
   //invert point cloud
   pcl::transformPointCloud(*cloud_p, *cloud_p, img2pc.inverse());
@@ -134,14 +170,69 @@ void vtkFeetSegmentationDepthDataset::setInliers(pcl::PointIndices::Ptr indices)
   img->SetSpacing(1.0, 1.0, 1.0);
   img->SetOrigin(.0, .0, .0);
 
-  img->AllocateScalars(VTK_UNSIGNED_CHAR, 1);
+  img->AllocateScalars(VTK_UNSIGNED_SHORT, 1);
 
   size_t nPixel = depthImg->GetDimensions()[0]*depthImg->GetDimensions()[1];
-  uint8_t data[nPixel];
-  std::memset(data, 0, nPixel);
+  uint16_t data[nPixel];
+  std::memset(data, 0, sizeof(uint16_t) * nPixel);
 
   size_t stride = depthImg->GetDimensions()[0];
-  for(pcl::PointCloud<pcl::PointXYZ>::iterator it = cloud_p->begin(); it!= cloud_p->end(); ++it)
+  for(PointCloud::iterator it = cloud_p->begin(); it!= cloud_p->end(); ++it)
+  {
+    pcl::PointXYZ point = *it;
+    int x = point._PointXYZ::x;
+    int y = point._PointXYZ::y;
+    data[ y * stride + x] = point._PointXYZ::x;
+  }
+
+  std::memcpy(img->GetScalarPointer(), data, sizeof(uint16_t) * nPixel);
+  maskResult->DeepCopy(img);
+}
+
+// ---------------------------------------------------------------
+pcl::PointCloud<pcl::PointXYZ>::Ptr vtkFeetSegmentationDepthDataset::getPointCloud(bool filterOutlier)
+{
+  if (!filterOutlier)
+    return cloud;
+
+  pcl::transformPointCloud(*cloud, *cloud, img2pc.inverse());
+
+  PointCloud::Ptr filteredCloud(new PointCloud);
+
+  // It is necessary to remove the points with Z value to 0 (Here?!)
+  pcl::PassThrough<Point> pass;
+  pass.setInputCloud(cloud);
+  pass.setFilterFieldName("z");
+  pass.setFilterLimits(0.0, 0.0);
+  pass.setNegative(true);
+  pass.filter(*filteredCloud);
+
+  pcl::transformPointCloud(*cloud, *cloud, img2pc);
+
+  pcl::transformPointCloud(*filteredCloud, *filteredCloud, img2pc);
+
+  return filteredCloud;
+}
+
+// ---------------------------------------------------------------
+void vtkFeetSegmentationDepthDataset::setInliers(PointCloud::Ptr inlierCloud)
+{
+  //invert point cloud
+  pcl::transformPointCloud(*inlierCloud, *inlierCloud, img2pc.inverse());
+
+  vtkImageData *img = vtkImageData::New();
+  img->SetDimensions(depthImg->GetDimensions());
+  img->SetSpacing(1.0, 1.0, 1.0);
+  img->SetOrigin(.0, .0, .0);
+
+  img->AllocateScalars(VTK_UNSIGNED_SHORT, 1);
+
+  size_t nPixel = depthImg->GetDimensions()[0]*depthImg->GetDimensions()[1];
+  uint16_t data[nPixel];
+  std::memset(data, 0, sizeof(uint16_t) * nPixel);
+
+  size_t stride = depthImg->GetDimensions()[0];
+  for(PointCloud::iterator it = inlierCloud->begin(); it!= inlierCloud->end(); ++it)
   {
     pcl::PointXYZ point = *it;
     int x = point._PointXYZ::x;
@@ -149,7 +240,8 @@ void vtkFeetSegmentationDepthDataset::setInliers(pcl::PointIndices::Ptr indices)
     data[ y * stride + x] = 255;
   }
 
-  std::memcpy(img->GetScalarPointer(), data, sizeof(uint8_t) * nPixel);
+  std::memcpy(img->GetScalarPointer(), data, sizeof(uint16_t) * nPixel);
   maskResult->DeepCopy(img);
-}
 
+  img->Delete();
+}

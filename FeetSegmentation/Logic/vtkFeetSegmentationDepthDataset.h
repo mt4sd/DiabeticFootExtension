@@ -33,7 +33,7 @@ public:
    * @brief getPointCloud
    * @return
    */
-  pcl::PointCloud<pcl::PointXYZ>::Ptr getPointCloud() const { return cloud; }
+  PointCloud::Ptr getPointCloud(bool filterOutlier = true);
 
   /**
    * @brief getDepthImage
@@ -51,7 +51,13 @@ public:
    * @brief setInliers
    * @param indices
    */
-  void setInliers(pcl::PointIndices::Ptr indices);
+  void setInliers(pcl::PointIndices::Ptr indices); // To remove?
+
+  /**
+   * @brief setInliers
+   * @param inlierCloud
+   */
+  void setInliers(PointCloud::Ptr inlierCloud);
 
 private:
   vtkImageData *depthImg;
