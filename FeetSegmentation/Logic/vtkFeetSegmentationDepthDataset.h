@@ -2,6 +2,7 @@
 #define VTKFEETSEGMENTATIONDEPTHDATASET_H
 
 // PCL Includes
+#include <pcl/pcl_base.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/PointIndices.h>
@@ -33,7 +34,7 @@ public:
    * @brief getPointCloud
    * @return
    */
-  PointCloud::Ptr getPointCloud(bool filterOutlier = true);
+  PointCloud::Ptr getPointCloud() const { return cloud; }
 
   /**
    * @brief getDepthImage
@@ -47,17 +48,23 @@ public:
    */
   vtkImageData * getMaskResult() const { return maskResult; }
 
-  /**
-   * @brief setInliers
-   * @param indices
-   */
-  void setInliers(pcl::PointIndices::Ptr indices); // To remove?
+//  /**
+//   * @brief setInliers
+//   * @param indices
+//   */
+//  void setInliers(pcl::PointIndices::Ptr indices); // To remove?
 
   /**
    * @brief setInliers
    * @param inlierCloud
    */
   void setInliers(PointCloud::Ptr inlierCloud);
+
+  /**
+   * @brief setOutliers
+   * @param indices
+   */
+  void setInliers(std::vector<int> indices);
 
 private:
   vtkImageData *depthImg;

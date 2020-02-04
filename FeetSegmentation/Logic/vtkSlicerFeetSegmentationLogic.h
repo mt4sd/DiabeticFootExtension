@@ -79,15 +79,13 @@ public:
    * @brief pointCloudFilter
    * @param pointCloud
    */
-  pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudStatisticalFilter(vtkFeetSegmentationDepthDataset *pointCloud);
+  PointCloud::Ptr pointCloudStatisticalFilter(vtkFeetSegmentationDepthDataset *pointCloud);
 
-//  /**
-//   * @brief planeModelSegmentation
-//   * @param pointCloud
-//   * @return inlier indices
-//   */
-//  pcl::PointIndices::Ptr planeModelSegmentation(
-//      pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud);
+  /**
+   * @brief pointCloudFilter
+   * @param pointCloud
+   */
+  std::vector<int> pointCloudStatisticalFilter2(vtkFeetSegmentationDepthDataset *pointCloud);
 
   /**
   * @brief planeModelSegmentation
@@ -95,6 +93,13 @@ public:
   * @return
   */
  PointCloud::Ptr planeModelSegmentation(PointCloud::Ptr pointCloud);
+
+ /**
+  * @brief planeModelSegmentation
+  * @param pointCloud
+  * @return
+  */
+ std::vector<int> planeModelSegmentation(vtkFeetSegmentationDepthDataset *pointCloud);
 
   /**
    * @brief tensorBinarize, binarize a tensor input by thresholding
