@@ -66,20 +66,22 @@ qSlicerFeetSegmentationModule::~qSlicerFeetSegmentationModule()
 //-----------------------------------------------------------------------------
 QString qSlicerFeetSegmentationModule::helpText() const
 {
-  return "This is a loadable module that can be bundled in an extension";
+  return "This module implements a segmentation algorithm using multimodals images "
+         "(visible and depth-map images). This algorithm is described in \"Automatic Segmentation Based on Deep Learning "
+         "Techniques for Diabetic Foot Monitoring Through Multimodal Images\".";
 }
 
 //-----------------------------------------------------------------------------
 QString qSlicerFeetSegmentationModule::acknowledgementText() const
 {
-  return "This work was partially funded by NIH grant NXNNXXNNNNNN-NNXN";
+  return "This work was funded by MACbioIDi project (ULPGC)";
 }
 
 //-----------------------------------------------------------------------------
 QStringList qSlicerFeetSegmentationModule::contributors() const
 {
   QStringList moduleContributors;
-  moduleContributors << QString("John Doe (AnyWare Corp.)");
+  moduleContributors << QString("Abián Hernández (ULPGC)");
   return moduleContributors;
 }
 
@@ -92,7 +94,7 @@ QIcon qSlicerFeetSegmentationModule::icon() const
 //-----------------------------------------------------------------------------
 QStringList qSlicerFeetSegmentationModule::categories() const
 {
-  return QStringList() << "Examples";
+  return QStringList() << "DiabeticFoot";
 }
 
 //-----------------------------------------------------------------------------
