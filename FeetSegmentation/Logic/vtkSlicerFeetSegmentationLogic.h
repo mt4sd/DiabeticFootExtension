@@ -40,7 +40,6 @@
 // PCL Includes
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include <pcl/PointIndices.h>
 
 #include <Torch>
 #include "vtkSlicerFeetSegmentationModuleLogicExport.h"
@@ -79,27 +78,14 @@ public:
    * @brief pointCloudFilter
    * @param pointCloud
    */
-  PointCloud::Ptr pointCloudStatisticalFilter(vtkFeetSegmentationDepthDataset *pointCloud);
-
-  /**
-   * @brief pointCloudFilter
-   * @param pointCloud
-   */
-  std::vector<int> pointCloudStatisticalFilter2(vtkFeetSegmentationDepthDataset *pointCloud);
-
-  /**
-  * @brief planeModelSegmentation
-  * @param pointCloud
-  * @return
-  */
- PointCloud::Ptr planeModelSegmentation(PointCloud::Ptr pointCloud);
+  std::vector<int> pointCloudStatisticalFilter(PointCloud::Ptr pointCloud);
 
  /**
   * @brief planeModelSegmentation
   * @param pointCloud
   * @return
   */
- std::vector<int> planeModelSegmentation(vtkFeetSegmentationDepthDataset *pointCloud);
+ std::vector<int> planeModelSegmentation(PointCloud::Ptr pointCloud);
 
   /**
    * @brief tensorBinarize, binarize a tensor input by thresholding
@@ -122,15 +108,6 @@ public:
    * @return
    */
   torch::Tensor qImageToTensor(QImage &img);
-
-  // To remove
-  void test();
-  //To remove
-  void testNewVtkImageToPointCloud(vtkMRMLScalarVolumeNode * depthNode, vtkMRMLScalarVolumeNode * outputNode);
-  //To remove
-  void torchVTKTest(vtkMRMLVectorVolumeNode *node, vtkMRMLScalarVolumeNode *outputNode);
-  //To remove
-  void pointCloudTest(vtkMRMLScalarVolumeNode *maskNode, vtkMRMLScalarVolumeNode * depthNode);
 
 protected:
   vtkSlicerFeetSegmentationLogic();

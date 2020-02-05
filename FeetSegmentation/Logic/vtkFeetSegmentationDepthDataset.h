@@ -15,7 +15,10 @@
 
 // Qt Includes
 #include <QSize>
-
+/**
+ * @brief This class contains the depth pixel values from a images and a representation as point cloud where
+ *  the points contains the X, Y and Z components.
+ */
 class vtkFeetSegmentationDepthDataset
 {
   typedef pcl::PointXYZ Point;
@@ -23,12 +26,6 @@ class vtkFeetSegmentationDepthDataset
 public:
   vtkFeetSegmentationDepthDataset(vtkImageData *depthImg, QSize resize=QSize(0,0));
   ~vtkFeetSegmentationDepthDataset();
-
-  /**
-   * @brief applyMask
-   * @param mask
-   */
-  void applyMask(vtkImageData *mask);
 
   /**
    * @brief getPointCloud
@@ -48,21 +45,17 @@ public:
    */
   vtkImageData * getMaskResult() const { return maskResult; }
 
-//  /**
-//   * @brief setInliers
-//   * @param indices
-//   */
-//  void setInliers(pcl::PointIndices::Ptr indices); // To remove?
-
   /**
-   * @brief setInliers
-   * @param inlierCloud
+   * @brief Apply a mask to the depth pixel values, this function update the
+   *  Point Cloud representation.
+   * @param vtkImageData with binary values.
    */
-  void setInliers(PointCloud::Ptr inlierCloud);
+  void applyMask(vtkImageData *mask);
 
   /**
-   * @brief setOutliers
-   * @param indices
+   * @brief Extract the inliers in the point cloud and update the vtkImageData
+   *  representation
+   * @param A vector with the indices of the inliers within the point cloud.
    */
   void setInliers(std::vector<int> indices);
 
@@ -79,9 +72,9 @@ private:
 
   /**
    * @brief generatePointCloud: Reading the grayscale 16 bit png, generate a point cloud.
-   * @param img: vtkImagaData in format Grayscale 16 bit.
+   * @param vtkImagaData in Grayscale 16 bit format.
    */
-  void generatePointCloud(vtkImageData *img);
+  void vtkImageToPointCloud(vtkImageData *img);
 
   /**
    * @brief pointCloudToVtkImageData: Generate a grayscale 16 bit image from a point cloud.
@@ -89,7 +82,7 @@ private:
    *    (Z component in the point cloud).
    * @param pointCloud: Point Cloud with point in XYZ format.
    */
-  void pointCloudToVtkImageData(PointCloud::Ptr pointCloud);
+  void pointCloudToVtkImage(PointCloud::Ptr pointCloud);
 };
 
 #endif // VTKFEETSEGMENTATIONDEPTHDATASET_H

@@ -20,9 +20,9 @@ This extension contains modules dedicated to research tasks for diabetic foot mo
         * Version 3.5 or above.
     * [Qt](https://www.qt.io/download)
         * Version 5.9.9 or above.
-    * [Git](http://git-scm.com/downloads)
     * [CUDA](https://developer.nvidia.com/cuda-10.1-download-archive-update2)
         * Version 10.1.
+    * [Git](http://git-scm.com/downloads)
 
 # Build 
 

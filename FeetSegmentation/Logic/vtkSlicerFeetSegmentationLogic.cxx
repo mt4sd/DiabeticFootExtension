@@ -25,10 +25,10 @@
 #include <vtkMRMLScene.h>
 
 // VTK includes
-#include <vtkIntArray.h>
-#include <vtkNew.h>
-#include <vtkObjectFactory.h>
 #include <vtkImageData.h>
+#include <vtkImageResize.h>
+#include <vtkSmartPointer.h>
+#include <vtkImageChangeInformation.h>
 
 // STD includes
 #include <cassert>
@@ -106,20 +106,32 @@ void vtkSlicerFeetSegmentationLogic::feetSegmentation(
   vtkFeetSegmentationDepthDataset pointCloud(depthInputNode->GetImageData(), QSize(512,512));
   pointCloud.applyMask(results[0]);
 
-//  PointCloud::Ptr cloudFiltered = pointCloudStatisticalFilter(&pointCloud);
-  std::vector<int> indices = pointCloudStatisticalFilter2(&pointCloud);
-  pointCloud.setInliers(indices);
-  std::vector<int> indices2 = planeModelSegmentation(&pointCloud);
-  pointCloud.setInliers(indices2);
-//  pcl::PointIndices::Ptr indices = planeModelSegmentation(cloudFiltered);
-//  PointCloud::Ptr indices = planeModelSegmentation(cloudFiltered);
-//  pointCloud.setInliers(indices);
-//  vtkImageData * result = pointCloud.getMaskResult();
+  std::vector<int> inlierIndices = pointCloudStatisticalFilter(pointCloud.getPointCloud());
+  pointCloud.setInliers(inlierIndices);
+  inlierIndices = planeModelSegmentation(pointCloud.getPointCloud());
+  pointCloud.setInliers(inlierIndices);
 
-//  outputNode->SetAndObserveImageData(result);
-//  outputNode->SetIJKToRASDirections(-1,0,0,0,-1,0,0,0,1);
-//  outputNode->SetOrigin(rgbInputNode->GetOrigin());
-//  outputNode->SetSpacing(rgbInputNode->GetSpacing());
+  vtkImageData *result = pointCloud.getDepthImage();
+
+  // Return the "result" image to the original size
+  vtkSmartPointer<vtkImageResize> vtkResize =
+    vtkSmartPointer<vtkImageResize>::New();
+
+  vtkResize->SetInputData(result);
+  vtkResize->SetOutputDimensions(depthInputNode->GetImageData()->GetDimensions());
+  vtkResize->Update();
+
+  vtkSmartPointer<vtkImageChangeInformation> changeFilter =
+       vtkSmartPointer<vtkImageChangeInformation>::New();
+
+  changeFilter->SetInputConnection(vtkResize->GetOutputPort());
+  changeFilter->SetOutputSpacing(rgbInputNode->GetImageData()->GetSpacing());
+  changeFilter->Update();
+
+  outputNode->SetAndObserveImageData(changeFilter->GetOutput());
+  outputNode->SetIJKToRASDirections(-1,0,0,0,-1,0,0,0,1);
+  outputNode->SetOrigin(rgbInputNode->GetOrigin());
+  outputNode->SetSpacing(rgbInputNode->GetSpacing());
 }
 
 std::vector<vtkImageData *> vtkSlicerFeetSegmentationLogic::torchSegmentation(vtkMRMLVectorVolumeNode *input)
@@ -132,39 +144,21 @@ std::vector<vtkImageData *> vtkSlicerFeetSegmentationLogic::torchSegmentation(vt
 }
 
 // -----------------------------------------------------------------
-pcl::PointCloud<pcl::PointXYZ>::Ptr vtkSlicerFeetSegmentationLogic::pointCloudStatisticalFilter(vtkFeetSegmentationDepthDataset *pointCloud)
-{
-  PointCloud::Ptr cloudFiltered (new PointCloud);
-
-  pcl::StatisticalOutlierRemoval<Point> sor;
-  sor.setInputCloud (pointCloud->getPointCloud());
-  sor.setMeanK(50);
-  sor.setStddevMulThresh(.01);
-  sor.filter(*cloudFiltered);
-
-  // Tmp, just testing
-  pcl::io::savePCDFile("maskedPCDOutlierRemoved.pcd", *cloudFiltered);
-
-  return cloudFiltered;
-}
-
-// -----------------------------------------------------------------
-std::vector<int> vtkSlicerFeetSegmentationLogic::pointCloudStatisticalFilter2(vtkFeetSegmentationDepthDataset *pointCloud)
+std::vector<int> vtkSlicerFeetSegmentationLogic::pointCloudStatisticalFilter(PointCloud::Ptr pointCloud)
 {
   std::vector<int> inlierIndices;
 
   pcl::StatisticalOutlierRemoval<Point> sor;
-  sor.setInputCloud (pointCloud->getPointCloud());
+  sor.setInputCloud (pointCloud);
   sor.setMeanK(50);
-  sor.setStddevMulThresh(.01);
+  sor.setStddevMulThresh(.001);
   sor.filter(inlierIndices);
 
   return inlierIndices;
 }
 
 // -------------------------------------------------------------------------------
-pcl::PointCloud<pcl::PointXYZ>::Ptr vtkSlicerFeetSegmentationLogic::planeModelSegmentation(
-    pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud)
+std::vector<int> vtkSlicerFeetSegmentationLogic::planeModelSegmentation(PointCloud::Ptr pointCloud)
 {
   pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
   pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
@@ -183,45 +177,6 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr vtkSlicerFeetSegmentationLogic::planeModelSe
 
   seg.setInputCloud (pointCloud);
   seg.segment (*inliers, *coefficients);
-
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_p (new pcl::PointCloud<pcl::PointXYZ>);
-
-  // Create the filtering object
-  pcl::ExtractIndices<pcl::PointXYZ> extract;
-
-  // Extract the inliers
-  extract.setInputCloud (pointCloud);
-  extract.setIndices (inliers);
-  extract.setNegative (false);
-  extract.filter (*cloud_p);
-
-  pcl::io::savePCDFile("resultPCD.pcd", *cloud_p);
-
-  return cloud_p;
-}
-
-// -----------------------------------------------------------
-std::vector<int> vtkSlicerFeetSegmentationLogic::planeModelSegmentation(vtkFeetSegmentationDepthDataset *pointCloud)
-{
-  pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
-  pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
-
-  // Create the segmentation object
-  pcl::SACSegmentation<pcl::PointXYZ> seg;
-
-  // Optional
-  seg.setOptimizeCoefficients (true);
-
-  // Mandatory
-  seg.setModelType (pcl::SACMODEL_PLANE);
-  seg.setMethodType (pcl::SAC_RANSAC);
-  seg.setDistanceThreshold (100);
-  seg.setMaxIterations (1000);
-
-  seg.setInputCloud (pointCloud->getPointCloud());
-  seg.segment (*inliers, *coefficients);
-
-  qDebug() << inliers->indices.size();
 
   return inliers->indices;
 }
@@ -267,60 +222,4 @@ torch::Tensor vtkSlicerFeetSegmentationLogic::vtkImageToTensor(vtkImageData *dat
 torch::Tensor vtkSlicerFeetSegmentationLogic::qImageToTensor(QImage &img)
 {
   return Utils::qImageToTensor(img);
-}
-
-void vtkSlicerFeetSegmentationLogic::test()
-{
-  FeetSegmentation torchModel = FeetSegmentation();
-  std::vector<QImage> results = torchModel.predict("/home/abian/Data/Tools/Slicer/Modules/DiabeticFootExtension/FeetSegmentation/Testing/Dataset/visible/");
-
-  results[0].save("itsTheFinalTest.png");
-}
-
-void vtkSlicerFeetSegmentationLogic::torchVTKTest(vtkMRMLVectorVolumeNode *inputNode, vtkMRMLScalarVolumeNode *outputNode)
-{
-  FeetSegmentation torchModel = FeetSegmentation();
-  std::vector<vtkImageData *> results = torchModel.predict(inputNode);
-  outputNode->SetAndObserveImageData(results[0]);
-
-  //Resize.... meh!
-//  vtkSmartPointer<vtkImageResize> resize =
-//      vtkSmartPointer<vtkImageResize>::New();
-
-//  resize->SetInputData(results[0]);
-//  resize->SetOutputDimensions(inputNode->GetImageData()->GetDimensions());
-//  resize->Update();
-//  vtkImageData *resizedImg = resize->GetOutput();
-
-//  int* data = inputNode->GetImageData()->GetDimensions();
-//  qDebug() << "Dimension[0]: " << data[0];
-//  qDebug() << "Dimension[1]: "<< data[1];
-
-
-//  outputNode->SetAndObserveImageData(resizedImg);
-
-  outputNode->SetIJKToRASDirections(-1,0,0,0,-1,0,0,0,1);
-  outputNode->SetOrigin(inputNode->GetOrigin());
-  outputNode->SetSpacing(inputNode->GetSpacing());
-}
-
-void vtkSlicerFeetSegmentationLogic::pointCloudTest(vtkMRMLScalarVolumeNode *maskNode, vtkMRMLScalarVolumeNode * depthNode)
-{
-  vtkFeetSegmentationDepthDataset pointCloud(depthNode->GetImageData(), QSize(512,512));
-  pointCloud.applyMask(maskNode->GetImageData());
-//  Utils::vtkImageToPointCloud(depthNode->GetImageData());
-}
-
-void vtkSlicerFeetSegmentationLogic::testNewVtkImageToPointCloud(vtkMRMLScalarVolumeNode * depthNode, vtkMRMLScalarVolumeNode * outputNode)
-{
-    pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud = Utils::vtkImageToPointCloud2(depthNode->GetImageData());
-    vtkSmartPointer<vtkImageData> depthImage = Utils::pointCloudToVtkImage(pointCloud);
-
-    outputNode->SetIJKToRASDirections(-1,0,0,0,-1,0,0,0,1);
-    outputNode->SetOrigin(depthNode->GetOrigin());
-    outputNode->SetSpacing(depthNode->GetSpacing());
-    outputNode->SetAndObserveImageData(depthImage);
-
-    // Remove memory
-    depthImage->Delete();
 }

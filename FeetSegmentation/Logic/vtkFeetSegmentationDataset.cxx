@@ -4,8 +4,6 @@
 // VTK Includes
 #include <vtkImageResize.h>
 
-
-
 vtkFeetSegmentationDataset::vtkFeetSegmentationDataset(vtkMRMLVectorVolumeNode *inputData)
   : data(inputData), shape(QSize(512,512))
 {}
