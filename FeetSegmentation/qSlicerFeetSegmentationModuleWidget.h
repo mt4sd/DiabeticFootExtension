@@ -70,8 +70,7 @@ public:
 
 
 public slots:
-  /* Slots for testing */
-  void elTest();
+  void applySegmentation();
 
 signals:
   void currentInputChanged();

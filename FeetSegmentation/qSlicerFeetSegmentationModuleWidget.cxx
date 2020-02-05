@@ -14,10 +14,6 @@
   limitations under the License.
 
 ==============================================================================*/
-
-// Qt includes
-#include <QDebug>
-
 //Module includes
 #import "vtkSlicerFeetSegmentationLogic.h"
 
@@ -83,7 +79,7 @@ void qSlicerFeetSegmentationModuleWidget::setup()
   );
 
   QObject::connect(
-    d->applyButton, SIGNAL(clicked()), this, SLOT(elTest())
+    d->applyButton, SIGNAL(clicked()), this, SLOT(applySegmentation())
   );
 }
 
@@ -120,16 +116,14 @@ vtkMRMLScalarVolumeNode * qSlicerFeetSegmentationModuleWidget::getOutputNode()
 }
 
 //-----------------------------------------------------------------------------
-void qSlicerFeetSegmentationModuleWidget::elTest()
+void qSlicerFeetSegmentationModuleWidget::applySegmentation()
 {
   Q_D(qSlicerFeetSegmentationModuleWidget);
 
-//  vtkMRMLVectorVolumeNode *dataset = getRGBInputNode();
-//  if (dataset != nullptr)
-//    d->logic()->torchVTKTest(dataset, getOutputNode());
   vtkMRMLVectorVolumeNode *rgbNode = getRGBInputNode();
   vtkMRMLScalarVolumeNode *depthNode = getDepthInputNode();
   vtkMRMLScalarVolumeNode *outputNode = getOutputNode();
 
-  d->logic()->feetSegmentation(rgbNode, depthNode, outputNode);
+  if (rgbNode != nullptr && depthNode != nullptr)
+    d->logic()->feetSegmentation(rgbNode, depthNode, outputNode);
 }

@@ -15,19 +15,16 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="ctkCollapsibleButton" name="CTKCollapsibleButton" native="true">
-     <property name="text" stdset="0">
-      <string>Display</string>
+    <widget class="ctkCollapsibleButton" name="IOCollapsibleButton">
+     <property name="text">
+      <string>Input/Output</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="qSlicerFeetSegmentationFooBarWidget" name="FooBar" native="true"/>
+       <widget class="qSlicerFeetSegmentationIOWidget" name="IOWidget" native="true"/>
       </item>
      </layout>
     </widget>
-   </item>
-   <item>
-    <widget class="qSlicerFeetSegmentationIOWidget" name="IOWidget" native="true"/>
    </item>
    <item>
     <widget class="QPushButton" name="applyButton">
@@ -62,12 +59,6 @@
    <class>ctkCollapsibleButton</class>
    <extends>QWidget</extends>
    <header>ctkCollapsibleButton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>qSlicerFeetSegmentationFooBarWidget</class>
-   <extends>QWidget</extends>
-   <header>qSlicerFeetSegmentationFooBarWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
