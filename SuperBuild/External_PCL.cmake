@@ -2,8 +2,16 @@
 set(proj PCL)
 
 # Set dependency list
-set(${proj}_DEPENDS
+if (WIN32)
+  set(${proj}_DEPENDS
+    Boost
+    Eigen3  
+    Flann
   )
+else() 
+  set(${proj}_DEPENDS
+  )
+endif()
 
 # Include dependent projects if any
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj)
