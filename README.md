@@ -43,5 +43,22 @@ In Linux is necessary to build PCL library which depends on the following librar
 ``` Bash
 $ sudo apt install libeigen3-dev libflann-dev libboost-all-dev
 ```
-
 ...
+
+## Building on Windows
+
+1. Download the [Boost Binary](https://sourceforge.net/projects/boost/files/boost-binaries/) corresponding to your MSVC Version and install it
+    * Following the Slicer building instructions, probably you have been using the **MSVC 14.0** (2015 version).
+1. Set the *``BOOST_ROOT``* global environment variable **or add the entry in CMake** as in the following line:
+    ```
+        -DBOOST_ROOT:PATH=[Boost Installation Dir]
+    ```
+1. Add the ``Slicer_DIR`` entry in CMake. 
+    * This entry will be used in order to indicate where is Slicer builded. Remember to select the ``Slicer-build`` subdirectory.
+    ```
+        -DSlicer_DIR:PATH=...
+    ```
+1. Configure and generate the project.
+    * As we said before, we recommend using the **MSVC 14**, i.e. the ``v140 toolset``.
+
+1. Click on ``Open Project`` on CMake GUI and build the project.

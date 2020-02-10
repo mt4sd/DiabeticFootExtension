@@ -4,8 +4,7 @@ set(proj PCL)
 # Set dependency list
 if (WIN32)
   set(${proj}_DEPENDS
-    Boost
-    Eigen3  
+    Eigen3
     Flann
   )
 else() 
@@ -62,6 +61,8 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SYSTEM_${p
       -DQt5_DIR:PATH=${Qt5_DIR}
       -DWITH_VTK:BOOL=ON
       -DVTK_DIR:PATH=${VTK_DIR}
+      -DEIGEN_ROOT:PATH=${Eigen3_DIR}
+      -DFLANN_ROOT:PATH=${Flann_DIR}
       -DPCL_SHARED_LIBS:BOOL=ON
       -DBUILD_apps:BOOL=OFF
       -DBUILD_examples:BOOL=OFF
@@ -71,44 +72,9 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SYSTEM_${p
       -DBUILD_tracking:BOOL=OFF
       -DBUILD_CUDA:BOOL=OFF
       -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
-
-      # # Compiler settings
-      # -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-      # -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
-      # -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-      # -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
-      # -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
-      # -DCMAKE_CXX_STANDARD_REQUIRED:BOOL=${CMAKE_CXX_STANDARD_REQUIRED}
-      # -DCMAKE_CXX_EXTENSIONS:BOOL=${CMAKE_CXX_EXTENSIONS}
-      # # Output directories
-      # -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_BINARY_DIR}/${Slicer_THIRDPARTY_BIN_DIR}
-      # -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_BINARY_DIR}/${Slicer_THIRDPARTY_LIB_DIR}
-      # -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-      # # Install directories
-      # # XXX The following two variables should be updated to match the
-      # #     requirements of a real CMake based external project
-      # # XXX Then, this comment and the one above should be removed. Really.
-      # -DFOO_INSTALL_RUNTIME_DIR:STRING=${Slicer_INSTALL_THIRDPARTY_LIB_DIR}
-      # -DFOO_INSTALL_LIBRARY_DIR:STRING=${Slicer_INSTALL_THIRDPARTY_LIB_DIR}
-      # # Output directories for CLIs
-      # #-DSlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY:PATH=${SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY}
-      # #-DSlicerExecutionModel_DEFAULT_CLI_RUNTIME_LIBRARY_DIRECTORY:PATH=${SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY}
-      # #-DSlicerExecutionModel_DEFAULT_CLI_RUNTIME_ARCHIVE_DIRECTORY:PATH=${SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY}
-      # # Options
-      # -DBUILD_TESTING:BOOL=OFF
-      # # Dependencies
-      # # -DBar_DIR:PATH=${Bar_DIR}
-    # CONFIGURE_COMMAND ${CMAKE_COMMAND} -E echo
-    #   "This CONFIGURE_COMMAND is just here as a placeholder."
-    #   "Remove this line to enable configuring of a real CMake based external project"
-    # BUILD_COMMAND ${CMAKE_COMMAND} -E echo
-    #   "This BUILD_COMMAND is just here as a placeholder."
-    #   "Remove this line to enable building of a real CMake based external project"
-    # INSTALL_COMMAND ""
     DEPENDS
       ${${proj}_DEPENDS}
-    )
-
+  )
   set(${proj}_DIR ${EP_INSTALL_DIR})
   if(UNIX)
     set(${proj}_DIR ${EP_INSTALL_DIR}/share/pcl-1.9/)

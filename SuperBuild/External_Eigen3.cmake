@@ -42,9 +42,7 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SYSTEM_${p
       ${${proj}_DEPENDS}
     )
   set(${proj}_DIR ${EP_SOURCE_DIR})
-  if(UNIX)
-    set(${proj}_DIR ${EP_SOURCE_DIR}/share/cmake/Torch/)
-  endif()
+  # set(EIGEN_INCLUDE_DIR ${proj}_DIR)
 
 else()
   ExternalProject_Add_Empty(${proj} DEPENDS ${${proj}_DEPENDS})
@@ -52,4 +50,6 @@ endif()
 
 mark_as_superbuild(${proj}_DIR:PATH)
 ExternalProject_Message(${proj} "${proj}_DIR:${${proj}_DIR}")
+# mark_as_superbuild(EIGEN_INCLUDE_DIR:PATH)
+# ExternalProject_Message(${proj} "EIGEN_INCLUDE_DIR:${EIGEN_INCLUDE_DIR}")
 
