@@ -18,7 +18,7 @@ if(DEFINED Torch_DIR AND NOT EXISTS ${Torch_DIR})
 endif()
 
 if(NOT DEFINED ${proj}_DIR AND NOT ${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SYSTEM_${proj})
-
+ 
   ExternalProject_SetIfNotDefined(
    ${SUPERBUILD_TOPLEVEL_PROJECT}_${proj}_GIT_REPOSITORY
    QUIET
@@ -29,11 +29,19 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SYSTEM_${p
    QUIET
    )
 
+  if (UNIX)
+    set(${proj}_URL https://download.pytorch.org/libtorch/cu101/libtorch-cxx11-abi-shared-with-deps-1.3.1.zip)
+  else()
+    set(${proj}_URL https://download.pytorch.org/libtorch/cu101/libtorch-win-shared-with-deps-1.3.1.zip)
+  endif()
+
   set(EP_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
 
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
-    URL "https://download.pytorch.org/libtorch/cu101/libtorch-cxx11-abi-shared-with-deps-1.3.1.zip"
+    # URL "https://download.pytorch.org/libtorch/cu101/libtorch-cxx11-abi-shared-with-deps-1.3.1.zip" #Linux
+    # URL "https://download.pytorch.org/libtorch/cu101/libtorch-win-shared-with-deps-1.3.1.zip"
+    URL ${${proj}_URL}
     SOURCE_DIR ${EP_SOURCE_DIR}
     CONFIGURE_COMMAND ${CMAKE_COMMAND} -E echo
       "This CONFIGURE_COMMAND is just here as a placeholder."
