@@ -18,6 +18,9 @@ This extension contains modules dedicated to research tasks for diabetic foot mo
 * **Tools & Libraries**:
     * [CMake](http://cmake.org/cmake/resources/software.html)
         * Version 3.5 or above.
+    * [Boost](https://www.boost.org/)
+        * Version 1.65 to 1.69. 
+        * Modules: `Data time`, `Filesystem`, `iostreams`, `MPI`, `Regex` and `Serialization` 
     * [Qt](https://www.qt.io/download)
         * Version 5.9.9 or above.
     * [CUDA](https://developer.nvidia.com/cuda-10.1-download-archive-update2)
@@ -35,9 +38,6 @@ In Linux is necessary to build PCL library which depends on the following librar
     * Version 3.3.4 or above.
 * [Flann](https://github.com/ahojnnes/flann)
     * Version 1.9.1 or above.
-* [Boost](...)
-    * Version 1.65 or above.
-    * Modules: `Data time`, `Filesystem`, `iostreams`, `MPI`, `Regex` and `Serialization` 
 
 ***Note***: In Ubuntu 18.04 you can install dependencies from repository:
 ``` Bash
