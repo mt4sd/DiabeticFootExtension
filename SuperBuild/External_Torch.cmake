@@ -53,10 +53,9 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SYSTEM_${p
     DEPENDS
       ${${proj}_DEPENDS}
     )
-  set(${proj}_DIR ${EP_SOURCE_DIR})
-  if(UNIX)
-    set(${proj}_DIR ${EP_SOURCE_DIR}/share/cmake/Torch/)
-  endif()
+  
+  set(${proj}_DIR ${EP_SOURCE_DIR}/share/cmake/Torch/)
+  
 
 else()
   ExternalProject_Add_Empty(${proj} DEPENDS ${${proj}_DEPENDS})

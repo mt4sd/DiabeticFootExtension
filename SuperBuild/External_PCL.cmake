@@ -76,8 +76,13 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SYSTEM_${p
       ${${proj}_DEPENDS}
   )
   set(${proj}_DIR ${EP_INSTALL_DIR})
+  
   if(UNIX)
     set(${proj}_DIR ${EP_INSTALL_DIR}/share/pcl-1.9/)
+  endif()
+
+  if (WIN32)
+    set(${proj}_DIR ${EP_INSTALL_DIR}/cmake/)
   endif()
 
 else()

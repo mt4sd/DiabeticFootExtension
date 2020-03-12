@@ -1,4 +1,3 @@
-
 #-----------------------------------------------------------------------------
 set(MODULE_NAME FeetSegmentation)
 set(MODULE_TITLE ${MODULE_NAME})
