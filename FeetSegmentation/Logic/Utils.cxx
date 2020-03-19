@@ -170,7 +170,7 @@ vtkImageData * Utils::pointCloudToVtkImage(PointCloud::Ptr pointCloud)
 
   size_t nPixels = depthImg->GetDimensions()[0]*depthImg->GetDimensions()[1];
   size_t stride = depthImg->GetDimensions()[0];
-  uint16_t data[nPixels];
+  uint16_t* data = new uint16_t[nPixels];
 
   for(PointCloud::iterator it = pointCloud->begin(); it!= pointCloud->end(); ++it)
   {
@@ -182,4 +182,5 @@ vtkImageData * Utils::pointCloudToVtkImage(PointCloud::Ptr pointCloud)
 
   std::memcpy(depthImg->GetScalarPointer(), data, sizeof(uint16_t) * nPixels);
   return depthImg;
+  delete[] data;
 }

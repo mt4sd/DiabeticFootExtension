@@ -142,7 +142,7 @@ void vtkFeetSegmentationDepthDataset::pointCloudToVtkImage(PointCloud::Ptr point
   size_t nPixels = depthImg->GetDimensions()[0]*depthImg->GetDimensions()[1];
   size_t stride = depthImg->GetDimensions()[0];
 
-  uint16_t data[nPixels];
+  uint16_t* data = new uint16_t[nPixels];
   std::memset(data, 0, sizeof(uint16_t) * nPixels);
 
   pcl::transformPointCloud(*cloud, *cloud, img2pc.inverse());
@@ -161,6 +161,7 @@ void vtkFeetSegmentationDepthDataset::pointCloudToVtkImage(PointCloud::Ptr point
 
   this->depthImg->DeepCopy(depthImg);
   depthImg->Delete();
+  delete[] data;
 }
 
 // ---------------------------------------------------------------
