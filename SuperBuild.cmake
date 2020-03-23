@@ -16,6 +16,13 @@ endforeach()
 
 set(proj ${SUPERBUILD_TOPLEVEL_PROJECT})
 
+
+if(NOT DEFINED BOOST_ROOT)
+  message(FATAL_ERROR "error: BOOST_ROOT is not defined")
+endif()
+mark_as_superbuild(BOOST_ROOT)
+
+
 # Project dependencies
 set(${proj}_DEPENDS
     PCL
