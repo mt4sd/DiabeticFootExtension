@@ -32,15 +32,14 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SYSTEM_${p
   if (UNIX)
     set(${proj}_URL https://download.pytorch.org/libtorch/cu101/libtorch-cxx11-abi-shared-with-deps-1.3.1.zip)
   else()
-    set(${proj}_URL https://download.pytorch.org/libtorch/cu101/libtorch-win-shared-with-deps-1.3.1.zip)
+    # set(${proj}_URL https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-1.4.0.zip) #CPU, not working
+    set(${proj}_URL https://download.pytorch.org/libtorch/cu101/libtorch-win-shared-with-deps-1.4.0.zip)
   endif()
 
   set(EP_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
 
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
-    # URL "https://download.pytorch.org/libtorch/cu101/libtorch-cxx11-abi-shared-with-deps-1.3.1.zip" #Linux
-    # URL "https://download.pytorch.org/libtorch/cu101/libtorch-win-shared-with-deps-1.3.1.zip"
     URL ${${proj}_URL}
     SOURCE_DIR ${EP_SOURCE_DIR}
     CONFIGURE_COMMAND ${CMAKE_COMMAND} -E echo

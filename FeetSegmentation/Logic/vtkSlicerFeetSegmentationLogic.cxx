@@ -103,7 +103,7 @@ void vtkSlicerFeetSegmentationLogic::feetSegmentation(
 {
   std::vector<vtkImageData *> results = torchSegmentation(rgbInputNode);
 
-  vtkFeetSegmentationDepthDataset pointCloud(depthInputNode->GetImageData(), QSize(512,512));
+  test::vtkFeetSegmentationDepthDataset pointCloud(depthInputNode->GetImageData(), QSize(512,512));
   pointCloud.applyMask(results[0]);
 
   std::vector<int> inlierIndices = pointCloudStatisticalFilter(pointCloud.getPointCloud());
