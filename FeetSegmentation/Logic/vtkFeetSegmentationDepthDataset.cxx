@@ -19,6 +19,8 @@
 //Tmp
 #include <QDebug>
 
+namespace test{
+
 vtkFeetSegmentationDepthDataset::vtkFeetSegmentationDepthDataset(vtkImageData *depthImg, QSize resize)
   : depthImg(vtkImageData::New()), cloud((new PointCloud())),
     maskResult(vtkImageData::New()), img2pc(Eigen::Affine3f::Identity())
@@ -142,7 +144,8 @@ void vtkFeetSegmentationDepthDataset::pointCloudToVtkImage(PointCloud::Ptr point
   size_t nPixels = depthImg->GetDimensions()[0]*depthImg->GetDimensions()[1];
   size_t stride = depthImg->GetDimensions()[0];
 
-  uint16_t data[nPixels];
+  // uint16_t data[nPixels];
+  uint16_t* data = new uint16_t[nPixels];
   std::memset(data, 0, sizeof(uint16_t) * nPixels);
 
   pcl::transformPointCloud(*cloud, *cloud, img2pc.inverse());
@@ -160,6 +163,8 @@ void vtkFeetSegmentationDepthDataset::pointCloudToVtkImage(PointCloud::Ptr point
   std::memcpy(depthImg->GetScalarPointer(), data, sizeof(uint16_t) * nPixels);
 
   this->depthImg->DeepCopy(depthImg);
+  
+  delete[] data;
   depthImg->Delete();
 }
 
@@ -178,4 +183,6 @@ void vtkFeetSegmentationDepthDataset::setInliers(std::vector<int> indices)
 
   // Update the vtkImageData representation
   pointCloudToVtkImage(cloud);
+}
+
 }

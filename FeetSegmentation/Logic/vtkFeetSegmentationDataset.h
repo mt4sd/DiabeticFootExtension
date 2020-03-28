@@ -13,7 +13,11 @@
 // MRMLM Includes
 #include "vtkMRMLVectorVolumeNode.h"
 
-class vtkFeetSegmentationDataset : public torch::data::Dataset<vtkFeetSegmentationDataset>
+#include "vtkSlicerFeetSegmentationModuleLogicExport.h"
+
+namespace test{
+
+class VTK_SLICER_FEETSEGMENTATION_MODULE_LOGIC_EXPORT vtkFeetSegmentationDataset : public torch::data::Dataset<vtkFeetSegmentationDataset>
 {
 public:
   vtkFeetSegmentationDataset(vtkMRMLVectorVolumeNode *inputData);
@@ -28,5 +32,7 @@ private:
   vtkMRMLVectorVolumeNode *data;
   QSize shape;
 };
+
+}
 
 #endif // __vtkFeetSegmentationDataset_h

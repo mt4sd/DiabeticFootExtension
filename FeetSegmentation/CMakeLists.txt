@@ -4,6 +4,11 @@ set(MODULE_TITLE ${MODULE_NAME})
 
 string(TOUPPER ${MODULE_NAME} MODULE_NAME_UPPER)
 
+if (WIN32 AND (${CMAKE_GENERATOR} STREQUAL "Ninja"))
+  # Fix command length problem using Ninja in Windows 
+  SET(CMAKE_NINJA_FORCE_RESPONSE_FILE 1 CACHE INTERNAL "")
+endif()
+
 #-----------------------------------------------------------------------------
 find_package(Torch QUIET)
 find_package(PCL QUIET COMPONENTS segmentation io visualization)

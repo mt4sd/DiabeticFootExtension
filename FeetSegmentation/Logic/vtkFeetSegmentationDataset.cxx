@@ -4,6 +4,8 @@
 // VTK Includes
 #include <vtkImageResize.h>
 
+namespace test{
+
 vtkFeetSegmentationDataset::vtkFeetSegmentationDataset(vtkMRMLVectorVolumeNode *inputData)
   : data(inputData), shape(QSize(512,512))
 {}
@@ -25,4 +27,6 @@ torch::data::Example<> vtkFeetSegmentationDataset::get(size_t index)
   torch::Tensor imgTensor = Utils::vtkImageToTensor(resizedImg);
 
   return {imgTensor, torch::zeros(imgTensor.sizes())};
+}
+
 }

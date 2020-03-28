@@ -69,7 +69,7 @@ std::vector<vtkImageData *> FeetSegmentation::predict(vtkMRMLVectorVolumeNode *d
   std::vector<torch::Tensor> batchResults;
   std::vector<vtkImageData *> results;
 
-  auto dataset = vtkFeetSegmentationDataset(datasetNode)
+  auto dataset = test::vtkFeetSegmentationDataset(datasetNode)
           .map(normalize)
           .map(torch::data::transforms::Stack<>());
 

@@ -15,7 +15,7 @@
 
 ==============================================================================*/
 //Module includes
-#import "vtkSlicerFeetSegmentationLogic.h"
+#include "vtkSlicerFeetSegmentationLogic.h"
 
 // SlicerQt includes
 #include "qSlicerFeetSegmentationModuleWidget.h"

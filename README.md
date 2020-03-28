@@ -6,14 +6,16 @@ This extension contains modules dedicated to research tasks for diabetic foot mo
 
 * **Operating system**:
     * Ubuntu 18.04.
-    * ~~Windows.~~
+        * Working and tested using **GCC 7.4**
+    * Windows.
+        * Working and tested using **MSVC 14.16 (2017 version)**
 
 * **CUDA-Capable GPU**
     * Driver version 418.39 or above.
 
 
 * **Slicer**
-    * It's highly recommend to use the version 4.10.2.
+    * It's highly recommend to use the version 4.11 (Nightly version)
 
 * **Tools & Libraries**:
     * [CMake](http://cmake.org/cmake/resources/software.html)
@@ -48,6 +50,7 @@ $ sudo apt install libeigen3-dev libflann-dev libboost-all-dev
 ## Building on Windows
 
 1. Download the [Boost Binary](https://sourceforge.net/projects/boost/files/boost-binaries/) corresponding to your MSVC Version and install it
+    * It's **highly recommended** to use **MSVC 14.16** (2017 version)
     * Following the Slicer building instructions, probably you have been using the **MSVC 14.0** (2015 version).
 1. Set the *``BOOST_ROOT``* global environment variable **or add the entry in CMake** as in the following line:
     ```
@@ -59,6 +62,6 @@ $ sudo apt install libeigen3-dev libflann-dev libboost-all-dev
         -DSlicer_DIR:PATH=...
     ```
 1. Configure and generate the project.
-    * As we said before, we recommend using the **MSVC 14**, i.e. the ``v140 toolset``.
+    * As we said before, we recommend using the **MSVC 14.16**, i.e. the ``v141 toolset``.
 
 1. Click on ``Open Project`` on CMake GUI and build the project.

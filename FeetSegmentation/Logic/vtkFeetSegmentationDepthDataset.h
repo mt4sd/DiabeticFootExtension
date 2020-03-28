@@ -15,6 +15,12 @@
 
 // Qt Includes
 #include <QSize>
+
+// Std Includes
+#include <vector>
+
+namespace test {
+
 /**
  * @brief This class contains the depth pixel values from a images and a representation as point cloud where
  *  the points contains the X, Y and Z components.
@@ -84,5 +90,7 @@ private:
    */
   void pointCloudToVtkImage(PointCloud::Ptr pointCloud);
 };
+
+}
 
 #endif // VTKFEETSEGMENTATIONDEPTHDATASET_H

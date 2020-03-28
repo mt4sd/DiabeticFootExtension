@@ -9,6 +9,7 @@ set(${KIT}_EXPORT_DIRECTIVE "VTK_SLICER_${MODULE_NAME_UPPER}_MODULE_LOGIC_EXPORT
 set(${KIT}_INCLUDE_DIRECTORIES
   ${TORCH_INCLUDE_DIRS}
   ${PCL_INCLUDE_DIRS}
+  ${VTK_INCLUDE_DIRS}
 )
 
 set(${KIT}_SRCS
@@ -31,6 +32,7 @@ set(${KIT}_TARGET_LIBRARIES
   ${TORCH_LIBRARIES}
   ${PCL_LIBRARIES}
   ${VTK_LIBRARIES}
+  ${MRML_LIBRARIES}
 )
 
 #-----------------------------------------------------------------------------
