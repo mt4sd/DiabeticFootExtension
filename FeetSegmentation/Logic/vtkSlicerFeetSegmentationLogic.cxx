@@ -32,6 +32,7 @@
 
 // STD includes
 #include <cassert>
+#include <string>
 
 // PCL Includes
 #include <pcl/filters/statistical_outlier_removal.h>
@@ -43,6 +44,7 @@
 #include <pcl/filters/extract_indices.h>
 
 #include <QDebug>
+
 
 //----------------------------------------------------------------------------
 vtkStandardNewMacro(vtkSlicerFeetSegmentationLogic);
@@ -136,7 +138,16 @@ void vtkSlicerFeetSegmentationLogic::feetSegmentation(
 
 std::vector<vtkImageData *> vtkSlicerFeetSegmentationLogic::torchSegmentation(vtkMRMLVectorVolumeNode *input)
 {
-  FeetSegmentation torchModel = FeetSegmentation();
+
+  if (this->GetModuleShareDirectory().empty())
+  {
+    vtkErrorMacro(<< "Failed to load Torch model: Share directory *NOT* set !");
+    return std::vector<vtkImageData *>();
+  }
+
+  std::string modelFileName = this->GetModuleShareDirectory() + "/ternausnet.pt";
+
+  FeetSegmentation torchModel = FeetSegmentation(modelFileName);
   if (input == nullptr)
     return std::vector<vtkImageData *>();
 

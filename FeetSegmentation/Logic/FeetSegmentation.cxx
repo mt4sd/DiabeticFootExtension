@@ -7,11 +7,17 @@
 //Tmp
 #include <QDebug>
 
-FeetSegmentation::FeetSegmentation() :
+FeetSegmentation::FeetSegmentation(std::string modelFilename) :
   device(torch::cuda::is_available() ? torch::kCUDA : torch::kCPU),
   normalize(torch::data::transforms::Normalize<>({0.485, 0.456, 0.406}, {0.229, 0.224, 0.225}))
 {
-  loadModel("FeetSegmentation/Resources/TorchScript/ternausnet.pt");
+    if (modelFilename.empty())
+    {
+      std::cerr << "Failed to load Torch model: the Torch model is empty" << std::endl;
+      return;
+    }
+    loadModel(modelFilename.c_str());
+  //loadModel("FeetSegmentation/Resources/TorchScript/ternausnet.pt");
 }
 
 std::vector<QImage> FeetSegmentation::predict(QString datasetDir, size_t batchSize)
@@ -108,10 +114,10 @@ std::vector<vtkImageData *> FeetSegmentation::predict(vtkMRMLVectorVolumeNode *d
   return results;
 }
 
-int FeetSegmentation::loadModel(QString modelFile)
+int FeetSegmentation::loadModel(std::string modelFile)
 {
   try {
-      model = torch::jit::load(modelFile.toStdString());
+      model = torch::jit::load(modelFile);
   } catch (const torch::Error& e) {
       std::cerr << "error loading the Torch model" << std::endl;
       return -1;

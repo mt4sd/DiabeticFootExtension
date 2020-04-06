@@ -25,7 +25,7 @@ export(TARGETS torch_library APPEND FILE "Logic/${MODULE_NAME}Exports.cmake")
 #-----------------------------------------------------------------------------
 add_subdirectory(Logic)
 add_subdirectory(Widgets)
-add_subdirectory(Resources/TorchScript)
+#add_subdirectory(Resources/TorchScript)
 
 #-----------------------------------------------------------------------------
 set(MODULE_EXPORT_DIRECTIVE "Q_SLICER_QTMODULES_${MODULE_NAME_UPPER}_EXPORT")
@@ -76,6 +76,18 @@ slicerMacroBuildLoadableModule(
   RESOURCES ${MODULE_RESOURCES}
   WITH_GENERIC_TESTS
   )
+
+
+#----------------------------------------------------------------------------
+
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/Resources/TorchScript/ternausnet.pt
+  ${CMAKE_BINARY_DIR}/${Slicer_QTLOADABLEMODULES_SHARE_DIR}/${MODULE_NAME}/ternausnet.pt
+  COPYONLY)
+
+install(
+  FILES ${CMAKE_BINARY_DIR}/${Slicer_QTLOADABLEMODULES_SHARE_DIR}/${MODULE_NAME}/ternausnet.pt
+  DESTINATION ${Slicer_INSTALL_QTLOADABLEMODULES_SHARE_DIR}/${MODULE_NAME} COMPONENT Runtime)
 
 #-----------------------------------------------------------------------------
 if(BUILD_TESTING)
