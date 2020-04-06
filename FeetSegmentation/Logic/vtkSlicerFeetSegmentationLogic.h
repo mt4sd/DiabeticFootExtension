@@ -36,6 +36,7 @@
 
 // STD includes
 #include <cstdlib>
+#include <vector>
 
 // PCL Includes
 #include <pcl/point_cloud.h>
