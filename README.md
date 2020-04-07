@@ -10,10 +10,6 @@ This extension contains modules dedicated to research tasks for diabetic foot mo
     * Windows.
         * Working and tested using **MSVC 14.16 (2017 version)**
 
-* **CUDA-Capable GPU**
-    * Driver version 418.39 or above.
-
-
 * **Slicer**
     * It's highly recommend to use the version 4.11 (Nightly version)
 
@@ -28,6 +24,12 @@ This extension contains modules dedicated to research tasks for diabetic foot mo
     * [CUDA](https://developer.nvidia.com/cuda-10.1-download-archive-update2)
         * Version 10.1.
     * [Git](http://git-scm.com/downloads)
+
+# Recommendation
+* **CUDA-Capable GPU**
+    * Driver version 418.39 or above.
+    * CUDA Toolkit 10.1
+    * cuDNN 7.5
 
 # Build 
 

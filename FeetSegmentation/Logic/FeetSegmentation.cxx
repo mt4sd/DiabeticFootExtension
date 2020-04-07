@@ -117,7 +117,7 @@ std::vector<vtkImageData *> FeetSegmentation::predict(vtkMRMLVectorVolumeNode *d
 int FeetSegmentation::loadModel(std::string modelFile)
 {
   try {
-      model = torch::jit::load(modelFile);
+      model = torch::jit::load(modelFile, this->device);
   } catch (const torch::Error& e) {
       std::cerr << "error loading the Torch model" << std::endl;
       return -1;

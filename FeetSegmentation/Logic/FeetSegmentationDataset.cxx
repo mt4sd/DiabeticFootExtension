@@ -6,8 +6,9 @@
 // Temp
 #include <QImage>
 
-FeetSegmentationDataset::FeetSegmentationDataset(QString &imgDir)
-  : imgLocation(readData(imgDir)), shape(512,512)
+FeetSegmentationDataset::FeetSegmentationDataset(QString &imgDir) : 
+  device(torch::cuda::is_available() ? torch::kCUDA : torch::kCPU),
+  imgLocation(readData(imgDir)), shape(512,512)
 {}
 
 torch::data::Example<> FeetSegmentationDataset::get(size_t index)
@@ -15,7 +16,7 @@ torch::data::Example<> FeetSegmentationDataset::get(size_t index)
   QImage img(imgLocation[static_cast<int>(index)]);
   img = img.scaled(shape, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 
-  torch::Tensor imgTensor = Utils::qImageToTensor(img);
+  torch::Tensor imgTensor = Utils::qImageToTensor(img).to(device);
 
   return {imgTensor, torch::zeros(imgTensor.sizes())};
 }

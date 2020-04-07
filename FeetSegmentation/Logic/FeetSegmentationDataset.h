@@ -22,6 +22,7 @@ public:
   torch::optional<size_t> size() const override { return imgLocation.size(); }
 
 private:
+  torch::Device device;
   QStringList imgLocation;
   QSize shape;
 
