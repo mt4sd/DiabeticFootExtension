@@ -32,8 +32,11 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SYSTEM_${p
   if (UNIX)
     set(${proj}_URL https://download.pytorch.org/libtorch/cu101/libtorch-cxx11-abi-shared-with-deps-1.3.1.zip)
   else()
-    # set(${proj}_URL https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-1.4.0.zip) #CPU, not working
-    set(${proj}_URL https://download.pytorch.org/libtorch/cu101/libtorch-win-shared-with-deps-1.4.0.zip)
+    if (${BUILD_CUDA})
+      set(${proj}_URL https://download.pytorch.org/libtorch/cu101/libtorch-win-shared-with-deps-1.4.0.zip)
+    else()
+      set(${proj}_URL https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-1.4.0.zip)
+    endif()
   endif()
 
   set(EP_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
